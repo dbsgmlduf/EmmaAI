@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../models/patient_data.dart';
+import '../services/patient_service.dart';
 
 class PatientList extends StatefulWidget {
+  final List<Patient> patients;
   final String? selectedPatientId;
   final Function(Patient) onPatientSelected;
   final Function(String) onImageUploaded;
@@ -10,6 +12,7 @@ class PatientList extends StatefulWidget {
   final bool isPatientSelected;
 
   PatientList({
+    required this.patients,
     this.selectedPatientId,
     required this.onPatientSelected,
     required this.onImageUploaded,
@@ -136,7 +139,7 @@ class _PatientListState extends State<PatientList> {
                           Expanded(child: Text(patient.age.toString(), textAlign: TextAlign.center, style: TextStyle(fontSize: infoFontSize))),
                           Expanded(
                             child: CircleAvatar(
-                              backgroundColor: _getResultColor(patient.result),
+                              backgroundColor: _getResultColor(patient.resultNo),
                               radius: 9,
                             ),
                           ),
@@ -194,8 +197,8 @@ class _PatientListState extends State<PatientList> {
     );
   }
 
-  Color _getResultColor(String result) {
-    switch (result) {
+  Color _getResultColor(String resultNo) {
+    switch (resultNo) {
       case 'normal':
         return Colors.blue;
       case 'abnormal':

@@ -21,8 +21,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _loadUsers() async {
     users = await loadUsers();
-    print('Loaded ${users.length} users');
-    users.forEach((user) => print('User: ${user.email}'));
   }
 
   void _login() async {

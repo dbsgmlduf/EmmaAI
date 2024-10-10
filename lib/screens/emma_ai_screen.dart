@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../widgets/patient_list.dart';
 import '../widgets/analysis_result.dart';
 import '../models/patient_data.dart';
+import '../services/patient_service.dart';
 
 class EmmaAIScreen extends StatefulWidget {
   @override
@@ -11,6 +12,20 @@ class EmmaAIScreen extends StatefulWidget {
 class _EmmaAIScreenState extends State<EmmaAIScreen> {
   Patient? selectedPatient;
   Map<String, String> patientImages = {};
+  List<Patient> patients = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPatients();
+  }
+
+  Future<void> _loadPatients() async {
+    List<Patient> loadedPatients = await loadPatients();
+    setState(() {
+      patients = loadedPatients;
+    });
+  }
 
   void selectPatient(Patient patient) {
     setState(() {
@@ -33,6 +48,21 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
       });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('이미지가 삭제되었습니다.')),
+      );
+    }
+  }
+
+  void saveNote(String note) {
+    if (selectedPatient != null) {
+      setState(() {
+        int index = patients.indexWhere((p) => p.id == selectedPatient!.id);
+        if (index != -1) {
+          patients[index] = patients[index].copyWith(note: note);
+          selectedPatient = patients[index];
+        }
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('노트가 저장되었습니다.')),
       );
     }
   }
@@ -80,6 +110,7 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
             Expanded(
               flex: 2,
               child: PatientList(
+                patients: patients,
                 selectedPatientId: selectedPatient?.id,
                 onPatientSelected: selectPatient,
                 onImageUploaded: onImageUploaded,
@@ -93,6 +124,7 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
               child: AnalysisResult(
                 patient: selectedPatient,
                 imagePath: selectedPatient != null ? patientImages[selectedPatient!.id] : null,
+                onNoteSaved: saveNote,
               ),
             ),
           ],
