@@ -1,7 +1,64 @@
 import 'package:flutter/material.dart';
-import 'login_screen.dart';
+import '../services/api_service.dart';
 
-class SignupScreen extends StatelessWidget {
+class SignupScreen extends StatefulWidget {
+  @override
+  _SignupScreenState createState() => _SignupScreenState();
+}
+
+class _SignupScreenState extends State<SignupScreen> {
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _licenseKeyController = TextEditingController();
+
+  void _showAlertDialog(String title, String message, {VoidCallback? onConfirm}) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: Text('확인'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                if (onConfirm != null) {
+                  onConfirm();
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _signUp() async {
+    String name = _nameController.text;
+    String email = _emailController.text;
+    String password = _passwordController.text;
+    String licenseKey = _licenseKeyController.text;
+
+    try {
+      String result = await ApiService.signUp(name, email, password, licenseKey);
+      if (result == '1') {
+        _showAlertDialog('성공', '회원가입이 완료되었습니다.', onConfirm: () {
+          Navigator.pop(context);
+        },);
+      } else if (result == '2') {
+        _showAlertDialog('오류', '이미 존재하는 이메일입니다.');
+      } else if (result == '3') {
+        _showAlertDialog('오류', '이미 존재하는 라이센스 키입니다.');
+      } else {
+        _showAlertDialog('오류', '회원가입에 실패했습니다.');
+      }
+    } catch (e) {
+      _showAlertDialog('오류', '회원가입 중 오류가 발생했습니다: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
@@ -39,20 +96,18 @@ class SignupScreen extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     SizedBox(height: 50 * scale),
-                    buildTextField('Name', Icons.person, scale),
+                    buildTextField('Name', Icons.person, scale, _nameController),
                     SizedBox(height: 10 * scale),
-                    buildTextField('Email', Icons.email, scale),
+                    buildTextField('Email', Icons.email, scale, _emailController),
                     SizedBox(height: 10 * scale),
-                    buildTextField('Password', Icons.lock, scale, isPassword: true),
+                    buildTextField('Password', Icons.lock, scale, _passwordController, isPassword: true),
                     SizedBox(height: 10 * scale),
-                    buildTextField('License Key', Icons.vpn_key, scale),
+                    buildTextField('License Key', Icons.vpn_key, scale, _licenseKeyController),
                     SizedBox(height: 20 * scale),
-                    buildButton('Sign up', scale, () {
-
-                    }),
+                    buildButton('Sign up', scale, _signUp),
                     SizedBox(height: 10 * scale),
                     TextButton(
-                      child: Text('Login', style: TextStyle(color: Color(0xFFFFFFFF), fontSize: 20 * scale,decoration: TextDecoration.underline)),
+                      child: Text('Login', style: TextStyle(color: Color(0xFFFFFFFF), fontSize: 20 * scale, decoration: TextDecoration.underline)),
                       onPressed: () {
                         Navigator.pop(context);
                       },
@@ -65,7 +120,7 @@ class SignupScreen extends StatelessWidget {
           Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
-              padding: const EdgeInsets.only(bottom : 80),
+              padding: const EdgeInsets.only(bottom: 80),
               child: RichText(
                 textAlign: TextAlign.center,
                 text: TextSpan(
@@ -96,11 +151,12 @@ class SignupScreen extends StatelessWidget {
     );
   }
 
-  Widget buildTextField(String hintText, IconData icon, double scale, {bool isPassword = false}) {
+  Widget buildTextField(String hintText, IconData icon, double scale, TextEditingController controller, {bool isPassword = false}) {
     return Container(
       width: 600 * scale,
       height: 70 * scale,
       child: TextField(
+        controller: controller,
         obscureText: isPassword,
         style: TextStyle(color: Colors.white, fontSize: 16 * scale),
         decoration: InputDecoration(

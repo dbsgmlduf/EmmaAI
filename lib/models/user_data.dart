@@ -1,24 +1,31 @@
-import 'dart:convert';
-import 'package:flutter/services.dart' show rootBundle;
-
 class User {
   final String email;
   final String password;
   final String name;
+  final String licenseKey;
 
-  User({required this.email, required this.password, required this.name});
+  User({
+    required this.email,
+    required this.password,
+    required this.name,
+    required this.licenseKey
+  });
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      email: json['email'],
-      password: json['password'],
-      name: json['name']
+      email: json['email'] ?? '',
+      password: json['password'] ?? '',
+      name: json['name'] ?? '',
+      licenseKey: json['licenseKey'] ?? '',
     );
   }
-}
 
-Future<List<User>> loadUsers() async {
-  String jsonString = await rootBundle.loadString('assets/dummy_users.json');
-  final jsonResponse = json.decode(jsonString);
-  return (jsonResponse['users'] as List).map((user) => User.fromJson(user)).toList();
+  Map<String, dynamic> toJson() {
+    return {
+      'email': email,
+      'password': password,
+      'name': name,
+      'licenseKey': licenseKey,
+    };
+  }
 }

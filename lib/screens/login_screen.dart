@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'signup_screen.dart';
 import 'emma_ai_screen.dart';
-import '../models/user_data.dart';
+import '../services/api_service.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -11,35 +11,26 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  List<User> users = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _loadUsers();
-  }
-
-  Future<void> _loadUsers() async {
-    users = await loadUsers();
-  }
 
   void _login() async {
     String email = _emailController.text;
     String password = _passwordController.text;
 
-    User? user = users.firstWhere(
-          (user) => user.email == email && user.password == password,
-      orElse: () => User(email: '', password: '', name: ''),
-    );
-
-    if (user.email.isNotEmpty) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => EmmaAIScreen()),
-      );
-    } else {
+    try {
+      bool success = await ApiService.login(email, password);
+      if (success) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => EmmaAIScreen()),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('존재하지 않는 email 또는 비밀번호입니다.')),
+        );
+      }
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Invalid email or password')),
+        SnackBar(content: Text('로그인 실패: $e')),
       );
     }
   }
