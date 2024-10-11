@@ -12,6 +12,29 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  void _showAlertDialog(String title, String message, {VoidCallback? onConfirm}) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: Text('확인'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                if (onConfirm != null) {
+                  onConfirm();
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _login() async {
     String email = _emailController.text;
     String password = _passwordController.text;
@@ -24,14 +47,10 @@ class _LoginScreenState extends State<LoginScreen> {
           MaterialPageRoute(builder: (context) => EmmaAIScreen()),
         );
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('존재하지 않는 email 또는 비밀번호입니다.')),
-        );
+        _showAlertDialog('오류', '존재하지 않는 email 또는 비밀번호입니다.');
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('로그인 실패: $e')),
-      );
+      _showAlertDialog('오류', '로그인 실패: $e');
     }
   }
 
