@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/api_service.dart';
+import '../widgets/auth_widgets.dart';
 
 class SignupScreen extends StatefulWidget {
   @override
@@ -12,29 +13,6 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _licenseKeyController = TextEditingController();
-
-  void _showAlertDialog(String title, String message, {VoidCallback? onConfirm}) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: Text(message),
-          actions: <Widget>[
-            TextButton(
-              child: Text('확인'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                if (onConfirm != null) {
-                  onConfirm();
-                }
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   String? _validateEmail(String? value) {
     if (value == null || value.isEmpty) {
@@ -57,18 +35,18 @@ class _SignupScreenState extends State<SignupScreen> {
       try {
         String result = await ApiService.signUp(name, email, password, licenseKey);
         if (result == '1') {
-          _showAlertDialog('성공', '회원가입이 완료되었습니다.', onConfirm: () {
+          showAuthDialog(context,'성공', '회원가입이 완료되었습니다.', onConfirm: () {
             Navigator.pop(context);
           });
         } else if (result == '2') {
-          _showAlertDialog('오류', '이미 존재하는 이메일입니다.');
+          showAuthDialog(context,'오류', '이미 존재하는 이메일입니다.');
         } else if (result == '3') {
-          _showAlertDialog('오류', '이미 존재하는 라이센스 키입니다.');
+          showAuthDialog(context,'오류', '이미 존재하는 라이센스 키입니다.');
         } else {
-          _showAlertDialog('오류', '회원가입에 실패했습니다.');
+          showAuthDialog(context,'오류', '회원가입에 실패했습니다.');
         }
       } catch (e) {
-        _showAlertDialog('오류', '회원가입 중 오류가 발생했습니다: $e');
+        showAuthDialog(context,'오류', '회원가입 중 오류가 발생했습니다: $e');
       }
     }
   }
@@ -112,15 +90,15 @@ class _SignupScreenState extends State<SignupScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       SizedBox(height: 50 * scale),
-                      buildTextField('Name', Icons.person, scale, _nameController),
+                      buildAuthTextField('Name', Icons.person, scale, _nameController),
                       SizedBox(height: 10 * scale),
-                      buildTextField('Email', Icons.email, scale, _emailController, validator: _validateEmail),
+                      buildAuthTextField('Email', Icons.email, scale, _emailController, validator: _validateEmail),
                       SizedBox(height: 10 * scale),
-                      buildTextField('Password', Icons.lock, scale, _passwordController, isPassword: true),
+                      buildAuthTextField('Password', Icons.lock, scale, _passwordController, isPassword: true),
                       SizedBox(height: 10 * scale),
-                      buildTextField('License Key', Icons.vpn_key, scale, _licenseKeyController),
+                      buildAuthTextField('License Key', Icons.vpn_key, scale, _licenseKeyController),
                       SizedBox(height: 20 * scale),
-                      buildButton('Sign up', scale, _signUp),
+                      buildAuthButton('Sign up', scale, _signUp),
                       SizedBox(height: 10 * scale),
                       TextButton(
                         child: Text('Login', style: TextStyle(color: Color(0xFFFFFFFF), fontSize: 20 * scale, decoration: TextDecoration.underline)),
@@ -164,53 +142,6 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
           )
         ],
-      ),
-    );
-  }
-
-  Widget buildTextField(String hintText, IconData icon, double scale, TextEditingController controller, {bool isPassword = false, String? Function(String?)? validator}) {
-    return Container(
-      width: 600 * scale,
-      height: 70 * scale,
-      child: TextFormField(
-        controller: controller,
-        obscureText: isPassword,
-        style: TextStyle(color: Colors.white, fontSize: 16 * scale),
-        decoration: InputDecoration(
-          hintText: hintText,
-          prefixIcon: Icon(icon, color: Colors.white, size: 24 * scale),
-          hintStyle: TextStyle(color: Colors.grey, fontSize: 16 * scale),
-          filled: true,
-          fillColor: Color(0xFF4A4A4A),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10 * scale),
-            borderSide: BorderSide.none,
-          ),
-          contentPadding: EdgeInsets.symmetric(vertical: 15 * scale, horizontal: 20 * scale),
-        ),
-        validator: validator ?? (value) {
-          if (value == null || value.isEmpty) {
-            return '$hintText를 입력해주세요';
-          }
-          return null;
-        },
-      ),
-    );
-  }
-
-  Widget buildButton(String text, double scale, VoidCallback onPressed) {
-    return Container(
-      width: 600 * scale,
-      height: 70 * scale,
-      child: ElevatedButton(
-        child: Text(text, style: TextStyle(fontSize: 18 * scale)),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Color(0xFF40C2FF),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10 * scale),
-          ),
-        ),
-        onPressed: onPressed,
       ),
     );
   }
