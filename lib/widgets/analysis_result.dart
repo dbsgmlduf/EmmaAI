@@ -245,7 +245,7 @@ class _AnalysisResultState extends State<AnalysisResult> {
         Switch(
           value: result,
           onChanged: (bool value) {
-            // 토글 상태 변경 로직을 여기에 추가할 수 있습니다.
+        
           },
           activeColor: Color(0xFF0676CB),
         ),
