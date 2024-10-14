@@ -210,6 +210,32 @@ class _AnalysisResultState extends State<AnalysisResult> {
               _buildFindingToggle('Aphthous stomatitis', true),
               _buildFindingToggle('Oral thrush', false),
               _buildFindingToggle('Oral herpes', false),
+              Spacer(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.arrow_back, color: Color(0xFF40C2FF), size: 60),
+                    onPressed: () {
+
+                    },
+                    iconSize: 60,
+                    padding: EdgeInsets.zero,
+                    constraints: BoxConstraints(),
+                  ),
+                  SizedBox(width : 100),
+                  IconButton(
+                    icon: Icon(Icons.arrow_forward, color: Color(0xFF40C2FF), size: 60),
+                    onPressed: () {
+
+                    },
+                    iconSize: 60,
+                    padding: EdgeInsets.zero,
+                    constraints: BoxConstraints(),
+                  ),
+                  SizedBox(height: 100),
+                ],
+              )
             ],
           ),
         ),
