@@ -5,10 +5,11 @@ import '../models/patient_data.dart';
 
 class AnalysisResult extends StatefulWidget {
   final Patient? patient;
-  final String? imagePath;
+  final String? uploadedImagePath;
+  final String? analysisImagePath;
   final Function(String) onNoteSaved;
 
-  AnalysisResult({this.patient, this.imagePath, required this.onNoteSaved});
+  AnalysisResult({this.patient, this.uploadedImagePath, this.analysisImagePath, required this.onNoteSaved});
 
   @override
   _AnalysisResultState createState() => _AnalysisResultState();
@@ -41,54 +42,6 @@ class _AnalysisResultState extends State<AnalysisResult> {
     final photoHeight = 440 / 1080 * screenHeight;
     final headerFontSize = 21 / 1080 * screenHeight;
 
-    Widget _buildInfoRow(String title, String content) {
-      return Row(
-        children: [
-          Text('$title :   ', style: TextStyle(color: Color(0xFF40C2FF), fontSize: headerFontSize)),
-          Text(content, style: TextStyle(color: Colors.white, fontSize: 18)),
-        ],
-      );
-    }
-
-    Widget _buildImage() {
-      if (widget.imagePath == null) {
-        return Center(
-          child: Text('[ 사진 없음 ]', style: TextStyle(color: Colors.red)),
-        );
-      }
-
-      Widget imageWidget;
-      if (kIsWeb) {
-        imageWidget = Image.network(
-          widget.imagePath!,
-          fit: BoxFit.contain,
-          errorBuilder: (context, error, stackTrace) {
-            return Center(
-              child: Text('이미지 로드 실패', style: TextStyle(color: Colors.red)),
-            );
-          },
-        );
-      } else {
-        imageWidget = Image.file(
-          File(widget.imagePath!),
-          fit: BoxFit.contain,
-          errorBuilder: (context, error, stackTrace) {
-            return Center(
-              child: Text('이미지 로드 실패', style: TextStyle(color: Colors.red)),
-            );
-          },
-        );
-      }
-
-      return AspectRatio(
-        aspectRatio: 16 / 9,
-        child: FittedBox(
-          fit: BoxFit.contain,
-          child: imageWidget,
-        ),
-      );
-    }
-
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -98,15 +51,42 @@ class _AnalysisResultState extends State<AnalysisResult> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: photoWidth,
-                height: photoHeight,
+                width: photoWidth + 40,
+                height: photoHeight + 20,
                 decoration: BoxDecoration(
                   border: Border.all(color: Color(0xFF40C2FF), width: 3),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(7),
-                  child: _buildImage(),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        margin: EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Color(0xFF40C2FF), width: 2),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: _buildImage(widget.uploadedImagePath),
+                        ),
+                      ),
+                    ),
+                    //SizedBox(width: 1),
+                    Expanded(
+                      child: Container(
+                        margin: EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Color(0xFF40C2FF), width: 2),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: _buildImage(widget.analysisImagePath),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               SizedBox(height: 16),
@@ -167,8 +147,8 @@ class _AnalysisResultState extends State<AnalysisResult> {
                         textInputAction: TextInputAction.newline,
                       )
                           : SingleChildScrollView(
-                             child: Text(_noteController.text,
-                               style: TextStyle(color: Colors.white, fontSize: 16),
+                        child: Text(_noteController.text,
+                          style: TextStyle(color: Colors.white, fontSize: 16),
                         ),
                       ),
                     ),
@@ -237,6 +217,54 @@ class _AnalysisResultState extends State<AnalysisResult> {
     );
   }
 
+  Widget _buildInfoRow(String title, String content) {
+    return Row(
+      children: [
+        Text('$title :   ', style: TextStyle(color: Color(0xFF40C2FF), fontSize: 18)),
+        Text(content, style: TextStyle(color: Colors.white, fontSize: 18)),
+      ],
+    );
+  }
+
+  Widget _buildImage(String? imagePath) {
+    if (imagePath == null) {
+      return Center(
+        child: Text('[ 사진 없음 ]', style: TextStyle(color: Colors.red)),
+      );
+    }
+
+    Widget imageWidget;
+    if (kIsWeb) {
+      imageWidget = Image.network(
+        imagePath,
+        fit: BoxFit.contain,
+        errorBuilder: (context, error, stackTrace) {
+          return Center(
+            child: Text('이미지 로드 실패', style: TextStyle(color: Colors.red)),
+          );
+        },
+      );
+    } else {
+      imageWidget = Image.file(
+        File(imagePath),
+        fit: BoxFit.contain,
+        errorBuilder: (context, error, stackTrace) {
+          return Center(
+            child: Text('이미지 로드 실패', style: TextStyle(color: Colors.red)),
+          );
+        },
+      );
+    }
+
+    return AspectRatio(
+      aspectRatio: 16 / 9,
+      child: FittedBox(
+        fit: BoxFit.contain,
+        child: imageWidget,
+      ),
+    );
+  }
+
   Widget _buildFindingToggle(String label, bool result) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -245,7 +273,7 @@ class _AnalysisResultState extends State<AnalysisResult> {
         Switch(
           value: result,
           onChanged: (bool value) {
-        
+            // Toggle logic here
           },
           activeColor: Color(0xFF0676CB),
         ),

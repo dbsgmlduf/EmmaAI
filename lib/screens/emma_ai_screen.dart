@@ -12,6 +12,7 @@ class EmmaAIScreen extends StatefulWidget {
 class _EmmaAIScreenState extends State<EmmaAIScreen> {
   Patient? selectedPatient;
   Map<String, String> patientImages = {};
+  Map<String, String> patientAnalysisImages = {};
   List<Patient> patients = [];
 
   @override
@@ -45,9 +46,27 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
     if (selectedPatient != null) {
       setState(() {
         patientImages.remove(selectedPatient!.id);
+        patientAnalysisImages.remove(selectedPatient!.id);
       });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('이미지가 삭제되었습니다.')),
+      );
+    }
+  }
+
+  Future<void> analyzeImage() async {
+    if (selectedPatient != null && patientImages.containsKey(selectedPatient!.id)) {
+      // 여기에 서버에 이미지를 보내고 분석 결과를 받아오는 로직 구현
+      setState(() {
+        // 현재는 분석 결과 이미지 경로를 임의로 설정 작성.
+        patientAnalysisImages[selectedPatient!.id] = 'path/to/analyzed/image.jpg';
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('이미지 분석이 완료되었습니다.')),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('분석할 이미지가 없습니다. 먼저 이미지를 업로드해주세요.')),
       );
     }
   }
@@ -115,6 +134,7 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
                 onPatientSelected: selectPatient,
                 onImageUploaded: onImageUploaded,
                 onImageDeleted: deleteImage,
+                onImageAnalyzed: analyzeImage,
                 isPatientSelected: selectedPatient != null,
               ),
             ),
@@ -123,7 +143,8 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
               flex: 3,
               child: AnalysisResult(
                 patient: selectedPatient,
-                imagePath: selectedPatient != null ? patientImages[selectedPatient!.id] : null,
+                uploadedImagePath: selectedPatient != null ? patientImages[selectedPatient!.id] : null,
+                analysisImagePath: selectedPatient != null ? patientAnalysisImages[selectedPatient!.id] : null,
                 onNoteSaved: saveNote,
               ),
             ),

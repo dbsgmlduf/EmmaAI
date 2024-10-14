@@ -9,6 +9,7 @@ class PatientList extends StatefulWidget {
   final Function(Patient) onPatientSelected;
   final Function(String) onImageUploaded;
   final VoidCallback onImageDeleted;
+  final VoidCallback onImageAnalyzed;
   final bool isPatientSelected;
 
   PatientList({
@@ -17,6 +18,7 @@ class PatientList extends StatefulWidget {
     required this.onPatientSelected,
     required this.onImageUploaded,
     required this.onImageDeleted,
+    required this.onImageAnalyzed,
     required this.isPatientSelected,
   });
 
@@ -190,7 +192,15 @@ class _PatientListState extends State<PatientList> {
             onPressed: widget.isPatientSelected ? _uploadImage : null,
           ),
           SizedBox(height: 8),
-          _buildActionButton(Icons.search, 'ANALYZE', buttonWidth, buttonHeight, iconSize, textSize),
+          _buildActionButton(
+              Icons.search,
+              'ANALYZE',
+              buttonWidth,
+              buttonHeight,
+              iconSize,
+              textSize,
+              onPressed: widget.isPatientSelected ? widget.onImageAnalyzed : null,
+          ),
           SizedBox(height: 16),
         ],
       ),
