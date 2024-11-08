@@ -18,11 +18,13 @@ class _LoginScreenState extends State<LoginScreen> {
     String password = _passwordController.text;
 
     try {
-      bool success = await ApiService.login(email, password);
-      if (success) {
+      final user = await ApiService.loginWithUser(email, password);
+      if (user != null) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => EmmaAIScreen()),
+          MaterialPageRoute(
+            builder: (context) => EmmaAIScreen(licenseKey: user.licenseKey),
+          ),
         );
       } else {
         showAuthDialog(context, '오류', '존재하지 않는 email 또는 비밀번호입니다.');

@@ -5,6 +5,10 @@ import '../models/patient_data.dart';
 import '../services/patient_service.dart';
 
 class EmmaAIScreen extends StatefulWidget {
+  final String licenseKey;
+  
+  EmmaAIScreen({required this.licenseKey});
+  
   @override
   _EmmaAIScreenState createState() => _EmmaAIScreenState();
 }
@@ -22,7 +26,7 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
   }
 
   Future<void> _loadPatients() async {
-    List<Patient> loadedPatients = await loadPatients();
+    List<Patient> loadedPatients = await PatientService.loadPatients(widget.licenseKey);
     setState(() {
       patients = loadedPatients;
     });
@@ -136,6 +140,7 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
                 onImageDeleted: deleteImage,
                 onImageAnalyzed: analyzeImage,
                 isPatientSelected: selectedPatient != null,
+                licenseKey: widget.licenseKey,
               ),
             ),
             SizedBox(width: 24),
