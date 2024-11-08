@@ -43,115 +43,117 @@ class _LoginScreenState extends State<LoginScreen> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-          backgroundColor: Colors.black,
-          resizeToAvoidBottomInset: false,
-          body: SingleChildScrollView(
-            child: Container(
-              height: screenSize.height,
-              child: Stack(
-                children: [
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 50),
-                      child: Text(
-                        'emma ai',
-                        style: TextStyle(
-                          color: Color(0xFF40C2FF),
-                          fontSize: 48,
-                          fontWeight: FontWeight.bold,
-                        ),
+        backgroundColor: Colors.black,
+        resizeToAvoidBottomInset: false,
+        body: SingleChildScrollView(
+          physics: ClampingScrollPhysics(),
+          child: Container(
+            height: screenSize.height,
+            child: Stack(
+              children: [
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 50),
+                    child: Text(
+                      'emma ai',
+                      style: TextStyle(
+                        color: Color(0xFF40C2FF),
+                        fontSize: 48,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
-                  Center(
-                    child: Container(
-                      width: 786 * scale,
-                      height: 621 * scale,
-                      decoration: BoxDecoration(
-                        color: Color(0xFF6C6C6C),
-                        borderRadius:
-                            BorderRadius.all(Radius.circular(47 * scale)),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.all(20 * scale),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            SizedBox(height: 20 * scale),
-                            Text(
-                              'Emma Healthcare',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 32 * scale,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(height: 10 * scale),
-                            Text(
-                              'Stomatitis AI Analyze System',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 32 * scale,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(height: 70 * scale),
-                            buildAuthTextField(
-                                'Email', Icons.email, scale, _emailController),
-                            SizedBox(height: 10 * scale),
-                            buildAuthTextField('Password', Icons.lock, scale,
-                                _passwordController,
-                                isPassword: true),
-                            SizedBox(height: 20 * scale),
-                            buildAuthButton('Login', scale, _login),
-                            SizedBox(height: 10 * scale),
-                            TextButton(
-                              child: Text('Sign up',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20 * scale,
-                                      decoration: TextDecoration.underline)),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => SignupScreen()),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
+                ),
+                Center(
+                  child: Container(
+                    width: 786 * scale,
+                    height: 621 * scale,
+                    decoration: BoxDecoration(
+                      color: Color(0xFF6C6C6C),
+                      borderRadius:
+                          BorderRadius.all(Radius.circular(47 * scale)),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(20 * scale),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(height: 20 * scale),
+                          Text(
+                            'Emma Healthcare',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 32 * scale,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 10 * scale),
+                          Text(
+                            'Stomatitis AI Analyze System',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 32 * scale,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 70 * scale),
+                          buildAuthTextField(
+                              'Email', Icons.email, scale, _emailController),
+                          SizedBox(height: 10 * scale),
+                          buildAuthTextField('Password', Icons.lock, scale,
+                              _passwordController,
+                              isPassword: true),
+                          SizedBox(height: 20 * scale),
+                          buildAuthButton('Login', scale, _login),
+                          SizedBox(height: 10 * scale),
+                          TextButton(
+                            child: Text('Sign up',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20 * scale,
+                                    decoration: TextDecoration.underline)),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => SignupScreen()),
+                              );
+                            },
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 80),
-                      child: RichText(
-                        textAlign: TextAlign.center,
-                        text: TextSpan(children: [
-                          TextSpan(
-                              text: 'emma\n',
-                              style: TextStyle(
-                                color: Color(0xFF40C2FF),
-                                fontSize: 45,
-                                fontWeight: FontWeight.bold,
-                              )),
-                          TextSpan(
-                              text: 'healthcare',
-                              style: TextStyle(
-                                color: Color(0xFFB3B3B4),
-                                fontSize: 30,
-                                fontWeight: FontWeight.bold,
-                              ))
-                        ]),
-                      ),
+                ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 80),
+                    child: RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(children: [
+                        TextSpan(
+                            text: 'emma\n',
+                            style: TextStyle(
+                              color: Color(0xFF40C2FF),
+                              fontSize: 45,
+                              fontWeight: FontWeight.bold,
+                            )),
+                        TextSpan(
+                            text: 'healthcare',
+                            style: TextStyle(
+                              color: Color(0xFFB3B3B4),
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold,
+                            ))
+                      ]),
                     ),
-                  )
-                ],
-              ),
+                  ),
+                )
+              ],
             ),
-          )),
+          ),
+        ),
+      ),
     );
   }
 }
