@@ -76,7 +76,14 @@ class ImageSection extends StatelessWidget {
       ),
       child: imagePath == null
           ? Center(child: Text('[ 사진 없음 ]', style: TextStyle(color: Colors.red)))
-          : Image.asset(imagePath, fit: BoxFit.cover),
+          : GestureDetector(
+              onLongPress: () {},
+              child: Image.asset(
+                imagePath,
+                fit: BoxFit.cover,
+                filterQuality: FilterQuality.high,
+              ),
+            ),
     );
   }
 } 

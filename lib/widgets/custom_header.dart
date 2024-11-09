@@ -34,7 +34,7 @@ class _CustomHeaderState extends State<CustomHeader> {
                 style: TextStyle(
                   fontSize: 61,
                   color: Colors.white,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.normal,
                 ),
               ),
             ),
@@ -54,25 +54,34 @@ class _CustomHeaderState extends State<CustomHeader> {
   }
 
   Widget _buildCustomIcon(IconData icon, double size) {
-    return IconButton(
-      icon: Icon(icon, color: Colors.white),
-      iconSize: size,
-      onPressed: () {
-        if (icon == Icons.settings) {
-          showDialog(
-            context: context,
-            builder: (context) => SettingsDialog(),
-          );
-        } else if (icon == Icons.account_circle) {
-          showDialog(
-            context: context,
-            builder: (context) => AccountDialog(
-              name: widget.name,
-              email: widget.email,
-            ),
-          );
-        }
-      },
+    return Material(
+      color: Colors.transparent,
+      child: IconButton(
+        icon: Icon(icon, color: Colors.white),
+        iconSize: size,
+        splashRadius: 28,
+        onPressed: () {
+          if (icon == Icons.settings) {
+            print("hell");
+            Navigator.of(context).push(
+              DialogRoute(
+                context: context,
+                builder: (context) => SettingsDialog(),
+              ),
+            );
+          } else if (icon == Icons.account_circle) {
+            Navigator.of(context).push(
+              DialogRoute(
+                context: context,
+                builder: (context) => AccountDialog(
+                  name: widget.name,
+                  email: widget.email,
+                ),
+              ),
+            );
+          }
+        },
+      ),
     );
   }
 } 
