@@ -46,7 +46,24 @@ class DatabaseHelper {
       FOREIGN KEY (licenseKey) REFERENCES users (licenseKey)
     )
   ''');
+  
+  await db.execute('''
+  CREATE TABLE patientchart (
+    chartId INTEGER PRIMARY KEY AUTOINCREMENT,
+    patientId TEXT NOT NULL,
+    originalImage TEXT,
+    resultImage TEXT,
+    findings TEXT,
+    painLevel TEXT,
+    note TEXT,
+    stomcount TEXT,
+    date TEXT NOT NULL,
+    stomsize TEXT,
+    FOREIGN KEY (patientId) REFERENCES patients (patientId)
+  )
+''');
   }
+
 
   Future<bool> insertUser(User user) async {
     final db = await database;
@@ -156,4 +173,50 @@ class DatabaseHelper {
       return false;
     }
   }
+
+  Future<bool> insertPatientChart(String patientId, Map<String, dynamic> chartData) async {
+  final db = await database;
+  try {
+    await db.insert('patientchart', {
+      'patientId': patientId,
+      'originalImage': chartData['originalImage'],
+      'resultImage': chartData['resultImage'],
+      'findings': chartData['findings'],
+      'painLevel': chartData['painLevel'],
+      'note': chartData['note'],
+      'stomcount': chartData['stomcount'],
+      'date': DateTime.now().toIso8601String(),
+      'stomsize': chartData['stomsize'],
+    });
+    return true;
+  } catch (e) {
+    print('차트 추가 중 오류 발생: $e');
+    return false;
+  }
+}
+
+Future<List<Map<String, dynamic>>> getPatientCharts(String patientId) async {
+  final db = await database;
+  return await db.query(
+    'patientchart',
+    where: 'patientId = ?',
+    whereArgs: [patientId],
+    orderBy: 'date DESC',
+  );
+}
+
+Future<bool> deletePatientCharts(String patientId) async {
+  final db = await database;
+  try {
+    await db.delete(
+      'patientchart',
+      where: 'patientId = ?',
+      whereArgs: [patientId],
+    );
+    return true;
+  } catch (e) {
+    print('차트 삭제 중 오류 발생: $e');
+    return false;
+  }
+}
 } 
