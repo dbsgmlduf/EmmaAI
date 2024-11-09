@@ -11,4 +11,8 @@ class PatientService {
   static Future<bool> addPatient(Patient patient, String licenseKey) async {
     return await _db.insertPatient(patient, licenseKey);
   }
+
+  static Future<bool> deletePatient(String patientId, String licenseKey) async {
+    return await _db.deletePatient(patientId, licenseKey);
+  }
 }

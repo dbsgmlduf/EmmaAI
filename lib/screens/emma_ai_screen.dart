@@ -8,9 +8,9 @@ import '../widgets/custom_header.dart';
 
 class EmmaAIScreen extends StatefulWidget {
   final String licenseKey;
-  
+
   EmmaAIScreen({required this.licenseKey});
-  
+
   @override
   _EmmaAIScreenState createState() => _EmmaAIScreenState();
 }
@@ -92,9 +92,25 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
     }
   }
 
+  void deletePatient(String patientId) async {
+    final success = await PatientService.deletePatient(patientId, widget.licenseKey);
+    if (success) {
+      setState(() {
+        patients.removeWhere((p) => p.id == patientId);
+        if (selectedPatient?.id == patientId) {
+          selectedPatient = null;
+        }
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('환자가 삭제되었습니다.')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Column(
         children: [
           CustomHeader(),
@@ -105,7 +121,7 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
-                    flex: 2,
+                    flex: 1,
                     child: PatientList(
                       patients: patients,
                       selectedPatientId: selectedPatient?.id,
@@ -115,11 +131,13 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
                       onImageAnalyzed: analyzeImage,
                       isPatientSelected: selectedPatient != null,
                       licenseKey: widget.licenseKey,
+                      onPatientDeleted: deletePatient,
+                      onPatientsUpdated: _loadPatients,
                     ),
                   ),
                   SizedBox(width: 24),
                   Expanded(
-                    flex: 3,
+                    flex: 4,
                     child: AnalysisResult(
                       patient: selectedPatient,
                       uploadedImagePath: selectedPatient != null ? patientImages[selectedPatient!.id] : null,

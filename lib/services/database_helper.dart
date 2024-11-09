@@ -36,12 +36,12 @@ class DatabaseHelper {
     )
   ''');
 
-     await db.execute('''
+  await db.execute('''
     CREATE TABLE patients (
       patientId TEXT PRIMARY KEY,
       date TEXT NOT NULL,
       age INTEGER NOT NULL,
-      sex TEXT NOT NULL CHECK(sex IN ('M', 'F')),
+      sex TEXT NOT NULL CHECK(sex IN ('Male', 'Female', 'Other')),
       licenseKey TEXT NOT NULL,
       FOREIGN KEY (licenseKey) REFERENCES users (licenseKey)
     )
@@ -115,6 +115,21 @@ class DatabaseHelper {
       return true;
     } catch (e) {
       print('환자 추가 중 오류 발생: $e');
+      return false;
+    }
+  }
+
+  Future<bool> deletePatient(String patientId, String licenseKey) async {
+    final db = await database;
+    try {
+      final rowsDeleted = await db.delete(
+        'patients',
+        where: 'patientId = ? AND licenseKey = ?',
+        whereArgs: [patientId, licenseKey],
+      );
+      return rowsDeleted > 0;
+    } catch (e) {
+      print('환자 삭제 중 오류 발생: $e');
       return false;
     }
   }
