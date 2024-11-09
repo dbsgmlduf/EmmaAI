@@ -3,8 +3,8 @@ import '../widgets/patient_list.dart';
 import '../widgets/analysis_result.dart';
 import '../models/patient_data.dart';
 import '../services/patient_service.dart';
-import 'login_screen.dart';
 import '../widgets/custom_header.dart';
+import '../widgets/analysis_text.dart';
 
 class EmmaAIScreen extends StatefulWidget {
   final String licenseKey;
@@ -26,6 +26,8 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
   Map<String, String> patientImages = {};
   Map<String, String> patientAnalysisImages = {};
   List<Patient> patients = [];
+  Map<String, dynamic> chart = {};
+  List<dynamic> chartHistory = [];
 
   @override
   void initState() {
@@ -113,6 +115,12 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
     }
   }
 
+  void updateChart(Map<String, dynamic> newChart) {
+    setState(() {
+      chart = newChart;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -130,7 +138,7 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
-                    flex: 1,
+                    flex: 2,
                     child: PatientList(
                       patients: patients,
                       selectedPatientId: selectedPatient?.id,
@@ -144,14 +152,33 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
                       onPatientsUpdated: _loadPatients,
                     ),
                   ),
-                  SizedBox(width: 24),
+                  SizedBox(width: 10),
                   Expanded(
-                    flex: 4,
+                    flex: 5,
                     child: AnalysisResult(
                       patient: selectedPatient,
                       uploadedImagePath: selectedPatient != null ? patientImages[selectedPatient!.id] : null,
                       analysisImagePath: selectedPatient != null ? patientAnalysisImages[selectedPatient!.id] : null,
                       onNoteSaved: saveNote,
+                      chart: chart,
+                      chartHistory: chartHistory,
+                      updateChart: updateChart,
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(
+                    flex: 1,
+                    child: Column(
+                      children: [
+                        ResultPanel(chart: chart),
+                        SizedBox(height: 16),
+                        Expanded(
+                          child: HistoryPanel(
+                            chartHistory: chartHistory,
+                            onChartSelected: updateChart,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],

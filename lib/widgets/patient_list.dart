@@ -73,7 +73,12 @@ class _PatientListState extends State<PatientList> {
             onPatientsUpdated: widget.onPatientsUpdated,
           ),
           _buildColumnHeaders(headerFontSize),
-          Divider(color: Color(0xFF40C2FF), thickness: 1),
+          Divider(
+            color: Color(0xFF40C2FF),
+            endIndent: 40,
+            indent: 40,
+            thickness: 3,
+          ),
           PatientListContent(
             patients: widget.patients,
             selectedPatientId: widget.selectedPatientId,
@@ -120,7 +125,7 @@ class _PatientListState extends State<PatientList> {
           Expanded(child: Text('SEX', textAlign: TextAlign.center, 
               style: TextStyle(color: Color(0xFF40C2FF), fontSize: fontSize))),
           Expanded(child: Text('RESULT', textAlign: TextAlign.center, 
-              style: TextStyle(color: Color(0xFF40C2FF), fontSize: fontSize))),
+              style: TextStyle(color: Color(0xFF40C2FF), fontSize: fontSize-1))),
         ],
       ),
     );

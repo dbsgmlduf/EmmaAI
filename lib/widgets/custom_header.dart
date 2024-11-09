@@ -33,7 +33,7 @@ class _CustomHeaderState extends State<CustomHeader> {
                 'emma ai',
                 style: TextStyle(
                   fontSize: 61,
-                  color: Color(0xFF40C2FF),
+                  color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
               ),
