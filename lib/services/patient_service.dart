@@ -15,4 +15,17 @@ class PatientService {
   static Future<bool> deletePatient(String patientId, String licenseKey) async {
     return await _db.deletePatient(patientId, licenseKey);
   }
+
+  static Future<String> changePassword(String email, String oldPassword, String newPassword) async {
+    try {
+      final success = await DatabaseHelper.instance.updatePassword(email, oldPassword, newPassword);
+      if (success) {
+        return '비밀번호가 성공적으로 변경되었습니다.';
+      } else {
+        return '현재 비밀번호가 일치하지 않습니다.';
+      }
+    } catch (e) {
+      return '비밀번호 변경 중 오류가 발생했습니다.';
+    }
+  }
 }

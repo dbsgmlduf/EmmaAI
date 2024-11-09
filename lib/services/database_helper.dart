@@ -133,4 +133,27 @@ class DatabaseHelper {
       return false;
     }
   }
+
+  Future<bool> updatePassword(String email, String oldPassword, String newPassword) async {
+    final db = await database;
+    try {
+      // 먼저 현재 비밀번호가 맞는지 확인
+      final user = await getUser(email, oldPassword);
+      if (user == null) {
+        return false; // 현재 비밀번호가 틀림
+      }
+
+      // 비밀번호 업데이트
+      final rowsUpdated = await db.update(
+        'users',
+        {'password': newPassword},
+        where: 'email = ?',
+        whereArgs: [email],
+      );
+      return rowsUpdated > 0;
+    } catch (e) {
+      print('비밀번호 변경 중 오류 발생: $e');
+      return false;
+    }
+  }
 } 

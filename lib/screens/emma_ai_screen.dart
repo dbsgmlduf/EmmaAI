@@ -8,8 +8,14 @@ import '../widgets/custom_header.dart';
 
 class EmmaAIScreen extends StatefulWidget {
   final String licenseKey;
+  final String name;
+  final String email;
 
-  EmmaAIScreen({required this.licenseKey});
+  EmmaAIScreen({
+    required this.licenseKey,
+    required this.name,
+    required this.email,
+  });
 
   @override
   _EmmaAIScreenState createState() => _EmmaAIScreenState();
@@ -113,7 +119,10 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
       resizeToAvoidBottomInset: false,
       body: Column(
         children: [
-          CustomHeader(),
+          CustomHeader(
+            name: widget.name,
+            email: widget.email,
+          ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(24.0),

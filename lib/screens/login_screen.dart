@@ -23,7 +23,11 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => EmmaAIScreen(licenseKey: user.licenseKey),
+            builder: (context) => EmmaAIScreen(
+              licenseKey: user.licenseKey,
+              name: user.name,
+              email: user.email,
+            ),
           ),
         );
       } else {
