@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 class FindingsSection extends StatefulWidget {
   final Map<String, dynamic> chart;
   final Function(String) onFindingsChanged;
+  final bool isPatientSelected;
 
   const FindingsSection({
     required this.chart,
     required this.onFindingsChanged,
+    required this.isPatientSelected,
   });
 
   @override
@@ -58,30 +60,36 @@ class _FindingsSectionState extends State<FindingsSection> {
               Text('Aphthous stomatitis', style: TextStyle(color: Colors.white)),
               Switch(
                 value: _isAphthousStomatitis,
-                onChanged: (value) {
-                  setState(() => _isAphthousStomatitis = value);
-                  widget.onFindingsChanged('1');
-                },
+                onChanged: widget.isPatientSelected
+                  ? (value) {
+                      setState(() => _isAphthousStomatitis = value);
+                      widget.onFindingsChanged('1');
+                    }
+                  : null,
                 activeColor: Color(0xFF40C2FF),
               ),
               SizedBox(width: 16),
               Text('Oral thrush', style: TextStyle(color: Colors.white)),
               Switch(
                 value: _isOralThrush,
-                onChanged: (value) {
-                  setState(() => _isOralThrush = value);
-                  widget.onFindingsChanged('3');
-                },
+                onChanged: widget.isPatientSelected
+                  ? (value) {
+                      setState(() => _isOralThrush = value);
+                      widget.onFindingsChanged('3');
+                    }
+                  : null,
                 activeColor: Color(0xFF40C2FF),
               ),
               SizedBox(width: 16),
               Text('Oral herpes', style: TextStyle(color: Colors.white)),
               Switch(
                 value: _isOralHerpes,
-                onChanged: (value) {
-                  setState(() => _isOralHerpes = value);
-                  widget.onFindingsChanged('2');
-                },
+                onChanged: widget.isPatientSelected
+                  ? (value) {
+                      setState(() => _isOralHerpes = value);
+                      widget.onFindingsChanged('2');
+                    }
+                  : null,
                 activeColor: Color(0xFF40C2FF),
               ),
             ],

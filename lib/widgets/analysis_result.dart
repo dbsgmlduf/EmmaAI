@@ -91,6 +91,7 @@ class _AnalysisResultState extends State<AnalysisResult> {
                 onFindingsChanged: (findings) {
                   // findings 업데이트 로직
                 },
+                isPatientSelected: widget.patient != null,
               ),
             ),
           ],
