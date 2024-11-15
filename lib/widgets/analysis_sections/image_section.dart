@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
 
 class ImageSection extends StatelessWidget {
   final String? uploadedImagePath;
@@ -78,8 +79,8 @@ class ImageSection extends StatelessWidget {
           ? Center(child: Text('[ 사진 없음 ]', style: TextStyle(color: Colors.red)))
           : GestureDetector(
               onLongPress: () {},
-              child: Image.asset(
-                imagePath,
+              child: Image.file(
+                File(imagePath),
                 fit: BoxFit.cover,
                 filterQuality: FilterQuality.high,
               ),

@@ -7,8 +7,9 @@ class ResultPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(left: 1),
+    return Container(
+      margin: EdgeInsets.only(bottom: 50),
+      padding: EdgeInsets.only(left: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -25,14 +26,16 @@ class ResultPanel extends StatelessWidget {
           ),
           SizedBox(height: 16),
           Padding(
-            padding: EdgeInsets.only(left: 16),
+            padding: EdgeInsets.only(left: 16), 
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('STOM COUNT: ${chart['stomCount'] ?? 0}',
                     style: TextStyle(color: Colors.white)),
                 SizedBox(height: 8),
-                Text('STOM SIZE: ${chart['stomSize'] ?? 0}',
+                Divider(color: Colors.white, thickness: 1),
+                SizedBox(height: 8),
+                Text('STOM SIZE:',
                     style: TextStyle(color: Colors.white)),
               ],
             ),
@@ -69,7 +72,8 @@ class _HistoryPanelState extends State<HistoryPanel> {
         ? startIndex + _itemsPerPage 
         : widget.chartHistory.length;
 
-    return Padding(
+    return Container(
+      margin: EdgeInsets.only(top: 50),
       padding: EdgeInsets.only(left: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

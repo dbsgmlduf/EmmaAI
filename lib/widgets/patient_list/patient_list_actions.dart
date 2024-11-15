@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-class PatientListActions extends StatelessWidget {
+class PatientListActions extends StatefulWidget {
   final bool isPatientSelected;
   final VoidCallback onImageDeleted;
   final Function(String) onImageUploaded;
@@ -23,6 +23,46 @@ class PatientListActions extends StatelessWidget {
   });
 
   @override
+  _PatientListActionsState createState() => _PatientListActionsState();
+}
+
+class _PatientListActionsState extends State<PatientListActions> {
+  Future<void> _uploadImage() async {
+    final ImagePicker _picker = ImagePicker();
+    
+    try {
+      final XFile? image = await _picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 80,
+        maxWidth: 1920,
+        maxHeight: 1080,
+      );
+
+      if (image != null) {
+        String extension = image.path.split('.').last.toLowerCase();
+        if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'].contains(extension)) {
+          widget.onImageUploaded(image.path);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('지원되는 이미지 형식: JPG, JPEG, PNG, GIF, BMP, WEBP'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      print('이미지 업로드 중 오류 발생: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('이미지 업로드 중 오류가 발생했습니다.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -31,19 +71,19 @@ class PatientListActions extends StatelessWidget {
           _buildActionButton(
             Icons.delete,
             'DELETE',
-            onPressed: isPatientSelected ? onImageDeleted : null,
+            onPressed: widget.isPatientSelected ? widget.onImageDeleted : null,
           ),
           SizedBox(height: 8),
           _buildActionButton(
             Icons.upload,
             'UPLOAD',
-            onPressed: isPatientSelected ? _uploadImage : null,
+            onPressed: widget.isPatientSelected ? _uploadImage : null,
           ),
           SizedBox(height: 8),
           _buildActionButton(
             Icons.search,
             'ANALYZE',
-            onPressed: isPatientSelected ? onImageAnalyzed : null,
+            onPressed: widget.isPatientSelected ? widget.onImageAnalyzed : null,
           ),
         ],
       ),
@@ -52,15 +92,15 @@ class PatientListActions extends StatelessWidget {
 
   Widget _buildActionButton(IconData icon, String text, {VoidCallback? onPressed}) {
     return Container(
-      width: buttonWidth,
-      height: buttonHeight,
+      width: widget.buttonWidth,
+      height: widget.buttonHeight,
       decoration: BoxDecoration(
         border: Border.all(color: Color(0xFF40C2FF), width: 2),
-        borderRadius: BorderRadius.circular(buttonHeight / 2),
+        borderRadius: BorderRadius.circular(widget.buttonHeight / 2),
       ),
       child: ElevatedButton.icon(
-        icon: Icon(icon, color: onPressed != null ? Color(0xFF40C2FF) : Colors.grey, size: iconSize),
-        label: Text(text, style: TextStyle(color: onPressed != null ? Color(0xFF40C2FF) : Colors.grey, fontSize: textSize)),
+        icon: Icon(icon, color: onPressed != null ? Color(0xFF40C2FF) : Colors.grey, size: widget.iconSize),
+        label: Text(text, style: TextStyle(color: onPressed != null ? Color(0xFF40C2FF) : Colors.grey, fontSize: widget.textSize)),
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,
@@ -68,19 +108,10 @@ class PatientListActions extends StatelessWidget {
           elevation: 0,
           padding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(buttonHeight / 2),
+            borderRadius: BorderRadius.circular(widget.buttonHeight / 2),
           ),
         ),
       ),
     );
-  }
-
-  Future<void> _uploadImage() async {
-    final ImagePicker _picker = ImagePicker();
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-
-    if (image != null) {
-      onImageUploaded(image.path);
-    }
   }
 }
