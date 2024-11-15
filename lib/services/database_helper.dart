@@ -197,12 +197,21 @@ class DatabaseHelper {
 
 Future<List<Map<String, dynamic>>> getPatientCharts(String patientId) async {
   final db = await database;
-  return await db.query(
+  final charts = await db.query(
     'patientchart',
     where: 'patientId = ?',
     whereArgs: [patientId],
     orderBy: 'date DESC',
   );
+  
+  return charts.map((chart) {
+    final date = DateTime.parse(chart['date'] as String);
+    return {
+      ...chart,
+      'displayDate': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+      'displayTime': '${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}',
+    };
+  }).toList();
 }
 
 Future<bool> deletePatientCharts(String patientId) async {

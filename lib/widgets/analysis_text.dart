@@ -60,87 +60,77 @@ class HistoryPanel extends StatefulWidget {
 }
 
 class _HistoryPanelState extends State<HistoryPanel> {
-  int _selectedIndex = -1;
-  int _currentPage = 0;
-  static const int _itemsPerPage = 10;
+  int? selectedIndex;
 
   @override
   Widget build(BuildContext context) {
-    final int totalPages = (widget.chartHistory.length / _itemsPerPage).ceil();
-    final int startIndex = _currentPage * _itemsPerPage;
-    final int endIndex = (startIndex + _itemsPerPage < widget.chartHistory.length) 
-        ? startIndex + _itemsPerPage 
-        : widget.chartHistory.length;
-
     return Container(
-      margin: EdgeInsets.only(top: 50),
-      padding: EdgeInsets.only(left: 16),
+      padding: EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('HISTORY',
-              style: TextStyle(
-                color: Color(0xFF40C2FF),
-                fontSize: 24,
-                fontWeight: FontWeight.bold
-              )),
-          SizedBox(height: 16),
+          Text(
+            'HISTORY',
+            style: TextStyle(
+              color: Color(0xFF40C2FF),
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           Divider(
             color: Color(0xFF40C2FF),
             thickness: 2,
           ),
           SizedBox(height: 16),
           Expanded(
-            child: Column(
-              children: [
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: endIndex - startIndex,
-                    itemBuilder: (context, index) {
-                      final historyIndex = startIndex + index;
-                      return Padding(
-                        padding: EdgeInsets.only(left: 16),
-                        child: ListTile(
-                          title: Text(
-                            '${historyIndex + 1}. [${widget.chartHistory[historyIndex]['date']}]',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          selected: _selectedIndex == historyIndex,
-                          onTap: () {
-                            setState(() {
-                              _selectedIndex = historyIndex;
-                            });
-                            widget.onChartSelected(widget.chartHistory[historyIndex]);
-                          },
-                        ),
-                      );
-                    },
+            child: ListView.builder(
+              itemCount: widget.chartHistory.length,
+              itemBuilder: (context, index) {
+                final chart = widget.chartHistory[index];
+                final isSelected = selectedIndex == index;
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      selectedIndex = index;
+                    });
+                    widget.onChartSelected(chart);
+                  },
+                  child: Container(
+                    margin: EdgeInsets.only(bottom: 8),
+                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    decoration: BoxDecoration(
+                      color: isSelected ? Color(0xFF40C2FF) : Colors.transparent,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      '${index + 1}. [ ${chart['displayDate']} ${chart['displayTime']} ]',
+                      style: TextStyle(
+                        color: isSelected ? Colors.black : Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                   ),
-                ),
-                if (totalPages > 1)
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.arrow_back, color: Color(0xFF40C2FF)),
-                        onPressed: _currentPage > 0
-                            ? () => setState(() => _currentPage--)
-                            : null,
-                      ),
-                      Text(
-                        '${_currentPage + 1} / $totalPages',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.arrow_forward, color: Color(0xFF40C2FF)),
-                        onPressed: _currentPage < totalPages - 1
-                            ? () => setState(() => _currentPage++)
-                            : null,
-                      ),
-                    ],
-                  ),
-              ],
+                );
+              },
             ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                icon: Icon(Icons.arrow_back_ios, color: Color(0xFF40C2FF)),
+                onPressed: () {
+                  // 이전 페이지 로직
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.arrow_forward_ios, color: Color(0xFF40C2FF)),
+                onPressed: () {
+                  // 다음 페이지 로직
+                },
+              ),
+            ],
           ),
         ],
       ),

@@ -109,7 +109,7 @@ class _AnalysisResultState extends State<AnalysisResult> {
         ),
         SizedBox(height: 16),
         NoteSection(
-          initialNote: widget.patient?.note,
+          initialNote: widget.chart['note'] ?? widget.patient?.note,
           onNoteSaved: widget.onNoteSaved,
           isPatientSelected: widget.patient != null,
         ),

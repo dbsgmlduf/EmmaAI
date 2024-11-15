@@ -26,6 +26,14 @@ class _NoteSectionState extends State<NoteSection> {
   }
 
   @override
+  void didUpdateWidget(NoteSection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initialNote != oldWidget.initialNote) {
+      _noteController.text = widget.initialNote ?? '';
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),

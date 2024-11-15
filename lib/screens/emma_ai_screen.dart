@@ -43,9 +43,11 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
     });
   }
 
-  void selectPatient(Patient patient) {
+  void selectPatient(Patient patient) async {
+    final patientCharts = await DatabaseHelper.instance.getPatientCharts(patient.id);
     setState(() {
       selectedPatient = patient;
+      chartHistory = patientCharts;
     });
   }
 
@@ -116,9 +118,18 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
     }
   }
 
-  void updateChart(Map<String, dynamic> newChart) {
+  void updateChart(Map<String, dynamic> selectedChart) {
     setState(() {
-      chart = newChart;
+      chart = selectedChart;
+      patientImages[selectedPatient!.id] = selectedChart['originalImage'] ?? '';
+      patientAnalysisImages[selectedPatient!.id] = selectedChart['resultImage'] ?? '';
+      
+      // 선택된 환자의 노트 업데이트
+      int index = patients.indexWhere((p) => p.id == selectedPatient!.id);
+      if (index != -1) {
+        patients[index] = patients[index].copyWith(note: selectedChart['note'] ?? '');
+        selectedPatient = patients[index];
+      }
     });
   }
 
