@@ -228,4 +228,19 @@ Future<bool> deletePatientCharts(String patientId) async {
     return false;
   }
 }
+
+Future<bool> deleteChart(String chartId) async {
+  final db = await database;
+  try {
+    await db.delete(
+      'patientchart',
+      where: 'chartId = ?',
+      whereArgs: [chartId],
+    );
+    return true;
+  } catch (e) {
+    print('차트 삭제 중 오류 발생: $e');
+    return false;
+  }
+}
 } 

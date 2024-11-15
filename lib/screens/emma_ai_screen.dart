@@ -155,6 +155,26 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
     }
   }
 
+  void deleteChart(String chartId) async {
+    final success = await DatabaseHelper.instance.deleteChart(chartId);
+    if (success) {
+      setState(() {
+        chartHistory.removeWhere((chart) => chart['id'] == chartId);
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('기록이 삭제되었습니다.')),
+      );
+    }
+  }
+
+  void newAnalysis() {
+    setState(() {
+      chart = {};
+      patientImages[selectedPatient!.id] = '';
+      patientAnalysisImages[selectedPatient!.id] = '';
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -198,6 +218,9 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
                       chartHistory: chartHistory,
                       updateChart: updateChart,
                       onChartSaved: saveChart,
+                      onNewAnalysis: newAnalysis,
+                      onChartDeleted: deleteChart,
+                      selectedChartId: chart['chartId']?.toString(),
                     ),
                   ),
                   SizedBox(width: 10),
@@ -211,6 +234,8 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
                           child: HistoryPanel(
                             chartHistory: chartHistory,
                             onChartSelected: updateChart,
+                            onNewAnalysis: newAnalysis,
+                            onChartDeleted: deleteChart,
                           ),
                         ),
                       ],

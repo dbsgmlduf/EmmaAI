@@ -49,10 +49,14 @@ class ResultPanel extends StatelessWidget {
 class HistoryPanel extends StatefulWidget {
   final List<dynamic> chartHistory;
   final Function(Map<String, dynamic>) onChartSelected;
+  final VoidCallback onNewAnalysis;
+  final Function(String) onChartDeleted;
 
   const HistoryPanel({
     required this.chartHistory,
     required this.onChartSelected,
+    required this.onNewAnalysis,
+    required this.onChartDeleted,
   });
 
   @override
