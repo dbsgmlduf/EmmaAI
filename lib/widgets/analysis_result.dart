@@ -13,6 +13,7 @@ class AnalysisResult extends StatefulWidget {
   final Map<String, dynamic> chart;
   final List<dynamic> chartHistory;
   final Function(Map<String, dynamic>) updateChart;
+  final Function(Map<String, dynamic>) onChartSaved;
 
   const AnalysisResult({
     this.patient,
@@ -22,6 +23,7 @@ class AnalysisResult extends StatefulWidget {
     required this.chart,
     required this.chartHistory,
     required this.updateChart,
+    required this.onChartSaved,
   });
 
   @override
@@ -69,7 +71,16 @@ class _AnalysisResultState extends State<AnalysisResult> {
             // 이미지 업로드 로직
           },
           onSave: () {
-            // 이미지 저장 로직
+            final chartData = {
+              'originalImage': widget.uploadedImagePath,
+              'resultImage': widget.analysisImagePath,
+              'findings': widget.chart['findings'] ?? '',
+              'painLevel': widget.chart['painLevel'] ?? '',
+              'note': widget.patient?.note ?? '',
+              'stomcount': widget.chart['stomcount'] ?? '',
+              'stomsize': widget.chart['stomsize'] ?? '',
+            };
+            widget.onChartSaved(chartData);
           },
           onDelete: () {
             // 이미지 삭제 로직

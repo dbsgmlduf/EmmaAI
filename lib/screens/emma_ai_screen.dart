@@ -5,6 +5,7 @@ import '../models/patient_data.dart';
 import '../services/patient_service.dart';
 import '../widgets/custom_header.dart';
 import '../widgets/analysis_text.dart';
+import '../services/database_helper.dart';
 
 class EmmaAIScreen extends StatefulWidget {
   final String licenseKey;
@@ -121,6 +122,28 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
     });
   }
 
+  Future<void> saveChart(Map<String, dynamic> chartData) async {
+    if (selectedPatient != null) {
+      final success = await DatabaseHelper.instance.insertPatientChart(
+        selectedPatient!.id,
+        chartData,
+      );
+      
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('차트가 저장되었습니다.')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('차트 저장 중 오류가 발생했습니다.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -163,6 +186,7 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
                       chart: chart,
                       chartHistory: chartHistory,
                       updateChart: updateChart,
+                      onChartSaved: saveChart,
                     ),
                   ),
                   SizedBox(width: 10),
