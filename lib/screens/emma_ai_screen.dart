@@ -59,12 +59,19 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
     }
   }
 
-  void deleteImage() {
+  void deleteImage() async {
     if (selectedPatient != null) {
       setState(() {
         patientImages.remove(selectedPatient!.id);
         patientAnalysisImages.remove(selectedPatient!.id);
       });
+      
+      // 히스토리 즉시 업데이트
+      final updatedCharts = await DatabaseHelper.instance.getPatientCharts(selectedPatient!.id);
+      setState(() {
+        chartHistory = updatedCharts;
+      });
+      
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('이미지가 삭제되었습니다.')),
       );
@@ -104,17 +111,34 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
   }
 
   void deletePatient(String patientId) async {
-    final success = await PatientService.deletePatient(patientId, widget.licenseKey);
-    if (success) {
-      setState(() {
-        patients.removeWhere((p) => p.id == patientId);
-        if (selectedPatient?.id == patientId) {
-          selectedPatient = null;
-        }
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('환자가 삭제되었습니다.')),
-      );
+    // 먼저 환자의 차트 기록 삭제
+    final chartsDeleted = await DatabaseHelper.instance.deletePatientCharts(patientId);
+    
+    if (chartsDeleted) {
+      // 차트 삭제 성공 후 환자 정보 삭제
+      final success = await DatabaseHelper.instance.deletePatient(patientId, widget.licenseKey);
+      
+      if (success) {
+        setState(() {
+          patients.removeWhere((p) => p.id == patientId);
+          if (selectedPatient?.id == patientId) {
+            selectedPatient = null;
+            chartHistory = [];
+          }
+        });
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('환자가 삭제되었습니다.')),
+        );
+      } else {
+        print('환자 정보 삭제 실패: patientId=$patientId, licenseKey=${widget.licenseKey}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('환자 정보 삭제 중 오류가 발생했습니다.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
@@ -141,6 +165,12 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
       );
       
       if (success) {
+        // 저장 성공 후 바로 차트 히스토리 업데이트
+        final updatedCharts = await DatabaseHelper.instance.getPatientCharts(selectedPatient!.id);
+        setState(() {
+          chartHistory = updatedCharts;
+        });
+        
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('차트가 저장되었습니다.')),
         );
@@ -158,9 +188,12 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
   void deleteChart(String chartId) async {
     final success = await DatabaseHelper.instance.deleteChart(chartId);
     if (success) {
+      // 차트 삭제 후 바로 히스토리 업데이트
+      final updatedCharts = await DatabaseHelper.instance.getPatientCharts(selectedPatient!.id);
       setState(() {
-        chartHistory.removeWhere((chart) => chart['id'] == chartId);
+        chartHistory = updatedCharts;
       });
+      
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('기록이 삭제되었습니다.')),
       );
@@ -191,8 +224,8 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    flex: 2,
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * (4/18),
                     child: PatientList(
                       patients: patients,
                       selectedPatientId: selectedPatient?.id,
@@ -208,7 +241,7 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
                   ),
                   SizedBox(width: 10),
                   Expanded(
-                    flex: 5,
+                    flex: 6,
                     child: AnalysisResult(
                       patient: selectedPatient,
                       uploadedImagePath: selectedPatient != null ? patientImages[selectedPatient!.id] : null,
@@ -223,9 +256,8 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
                       selectedChartId: chart['chartId']?.toString(),
                     ),
                   ),
-                  SizedBox(width: 10),
-                  Expanded(
-                    flex: 1,
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * (2/18),
                     child: Column(
                       children: [
                         ResultPanel(chart: chart),

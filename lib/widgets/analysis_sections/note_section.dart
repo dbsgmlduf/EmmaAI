@@ -35,24 +35,26 @@ class _NoteSectionState extends State<NoteSection> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final fontSize = 22 * (screenHeight / 1200);
+
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      width: MediaQuery.of(context).size.width * (1164/1920),
+      height: MediaQuery.of(context).size.height * (186/1200),
+      padding: EdgeInsets.all(5),
       decoration: BoxDecoration(
         border: Border.all(color: Color(0xFF40C2FF), width: 3),
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(10),
-          topRight: Radius.circular(10),
-          bottomLeft: Radius.circular(58),
-          bottomRight: Radius.circular(58),
-        ),
+        borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Note', style: TextStyle(color: Color(0xFF40C2FF), fontSize: 18)),
+              Text('Note', style: TextStyle(color: Color(0xFF40C2FF), fontSize: fontSize)),
               Row(
                 children: [
                   TextButton(
@@ -65,7 +67,7 @@ class _NoteSectionState extends State<NoteSection> {
                       });
                     } : null,
                     child: Text(_isEditing ? 'Save' : 'Edit',
-                        style: TextStyle(color: Color(0xFF40C2FF))),
+                      style: TextStyle(color: Color(0xFF40C2FF), fontSize: fontSize)),
                   ),
                   TextButton(
                     onPressed: widget.isPatientSelected ? () {
@@ -74,27 +76,29 @@ class _NoteSectionState extends State<NoteSection> {
                         widget.onNoteSaved('');
                       });
                     } : null,
-                    child: Text('Delete', style: TextStyle(color: Colors.red)),
+                    child: Text('Delete', 
+                      style: TextStyle(color: Colors.red, fontSize: fontSize)),
                   ),
                 ],
               ),
             ],
           ),
-          SizedBox(height: 4),
-          TextField(
-            controller: _noteController,
-            enabled: _isEditing,
-            maxLines: 2,
-            style: TextStyle(color: Colors.white),
-            decoration: InputDecoration(
-              hintText: '환자를 선택해주세요',
-              hintStyle: TextStyle(color: Colors.grey),
-              contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Color(0xFF40C2FF)),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Color(0xFF40C2FF)),
+          Expanded(
+            child: TextField(
+              controller: _noteController,
+              enabled: _isEditing,
+              maxLines: null,
+              style: TextStyle(color: Colors.white, fontSize: fontSize),
+              decoration: InputDecoration(
+                hintText: '환자를 선택해주세요',
+                hintStyle: TextStyle(color: Colors.grey, fontSize: fontSize),
+                contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xFF40C2FF)),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xFF40C2FF)),
+                ),
               ),
             ),
           ),

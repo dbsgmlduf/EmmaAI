@@ -42,7 +42,13 @@ class _FindingsSectionState extends State<FindingsSection> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final fontSize = 22 * (screenHeight / 1200);
+    
     return Container(
+      width: MediaQuery.of(context).size.width * (834/1920),
+      height: MediaQuery.of(context).size.height * (180/1200),
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         border: Border.all(color: Color(0xFF40C2FF), width: 3),
@@ -50,73 +56,86 @@ class _FindingsSectionState extends State<FindingsSection> {
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Findings', style: TextStyle(color: Color(0xFF40C2FF), fontSize: 18)),
-          SizedBox(height: 1),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Text('Aphthous stomatitis', style: TextStyle(color: Colors.white)),
-              Switch(
-                value: _isAphthousStomatitis,
-                onChanged: widget.isPatientSelected
-                  ? (value) {
-                      setState(() => _isAphthousStomatitis = value);
-                      widget.onFindingsChanged('1');
-                    }
-                  : null,
-                activeColor: Color(0xFF40C2FF),
-              ),
-              SizedBox(width: 16),
-              Text('Oral thrush', style: TextStyle(color: Colors.white)),
-              Switch(
-                value: _isOralThrush,
-                onChanged: widget.isPatientSelected
-                  ? (value) {
-                      setState(() => _isOralThrush = value);
-                      widget.onFindingsChanged('3');
-                    }
-                  : null,
-                activeColor: Color(0xFF40C2FF),
-              ),
-              SizedBox(width: 16),
-              Text('Oral herpes', style: TextStyle(color: Colors.white)),
-              Switch(
-                value: _isOralHerpes,
-                onChanged: widget.isPatientSelected
-                  ? (value) {
-                      setState(() => _isOralHerpes = value);
-                      widget.onFindingsChanged('2');
-                    }
-                  : null,
-                activeColor: Color(0xFF40C2FF),
-              ),
-            ],
-          ),
-          SizedBox(height: 1),
-          Divider(color: Color(0xFF40C2FF), thickness:2),
-          SizedBox(height: 1),
-          Row(
-            children: [
-              Text('Pain Level:', style: TextStyle(color: Color(0xFF40C2FF), fontSize: 16)),
-              SizedBox(width: 16),
-              Expanded(
-                child: Slider(
-                  value: _painLevel,
-                  min: 0,
-                  max: 10,
-                  divisions: 10,
-                  activeColor: Color(0xFF40C2FF),
-                  inactiveColor: Colors.grey,
-                  label: _painLevel.round().toString(),
-                  onChanged: (value) {
-                    setState(() => _painLevel = value);
-                    widget.onFindingsChanged(value.toString());
-                  },
+          Text('Findings', style: TextStyle(color: Color(0xFF40C2FF), fontSize: fontSize)),
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Flexible(
+                  child: Text('Aphthous stomatitis', 
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: _isAphthousStomatitis ? Color(0xFFFFAE00) : Colors.white,
+                      fontSize: fontSize
+                    )
+                  ),
                 ),
-              ),
-            ],
+                SizedBox(
+                  width: 75 * (screenWidth / 1920),
+                  height: 40 * (screenHeight / 1200),
+                  child: Switch(
+                    value: _isAphthousStomatitis,
+                    onChanged: null,
+                    activeColor: Color(0xFF40C2FF),
+                  ),
+                ),
+                SizedBox(width: 16),
+                Text('Oral thrush', 
+                  style: TextStyle(
+                    color: _isOralThrush ? Color(0xFFFFAE00) : Colors.white,
+                    fontSize: fontSize
+                  )
+                ),
+                Switch(
+                  value: _isOralThrush,
+                  onChanged: null,
+                  activeColor: Color(0xFF40C2FF),
+                ),
+                SizedBox(width: 16),
+                Text('Oral herpes', 
+                  style: TextStyle(
+                    color: _isOralHerpes ? Color(0xFFFFAE00) : Colors.white,
+                    fontSize: fontSize
+                  )
+                ),
+                Switch(
+                  value: _isOralHerpes,
+                  onChanged: null,
+                  activeColor: Color(0xFF40C2FF),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Row(
+              children: [
+                Text('Pain Level:', 
+                  style: TextStyle(color: Color(0xFF40C2FF), fontSize: fontSize)
+                ),
+                SizedBox(width: 16),
+                Expanded(
+                  child: SizedBox(
+                    height: 6 * (screenHeight / 1200),
+                    child: Slider(
+                      value: _painLevel,
+                      min: 0,
+                      max: 10,
+                      divisions: 10,
+                      label: _painLevel.round().toString(),
+                      onChanged: widget.isPatientSelected ? (value) {
+                        setState(() => _painLevel = value);
+                        widget.onFindingsChanged(value.toString());
+                      } : null,
+                      activeColor: Color(0xFF40C2FF),
+                      inactiveColor: Colors.grey,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),

@@ -5,7 +5,7 @@ import './analysis_sections/patient_info_section.dart';
 import './analysis_sections/findings_section.dart';
 import './analysis_sections/note_section.dart';
 
-class AnalysisResult extends StatelessWidget {
+class AnalysisResult extends StatefulWidget {
   final Patient? patient;
   final String? uploadedImagePath;
   final String? analysisImagePath;
@@ -33,60 +33,102 @@ class AnalysisResult extends StatelessWidget {
   });
 
   @override
+  _AnalysisResultState createState() => _AnalysisResultState();
+}
+
+class _AnalysisResultState extends State<AnalysisResult> {
+  final ScrollController _scrollController = ScrollController();
+
+  void _scrollToBottom() {
+    if (_scrollController.hasClients) {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ImageSection(
-          uploadedImagePath: uploadedImagePath,
-          analysisImagePath: analysisImagePath,
-          onUpload: onNewAnalysis,
-          onSave: () {
-            final chartData = {
-              'originalImage': uploadedImagePath,
-              'resultImage': analysisImagePath,
-              'findings': chart['findings'] ?? '',
-              'painLevel': chart['painLevel'] ?? '',
-              'note': patient?.note ?? '',
-              'stomcount': chart['stomcount'] ?? '',
-              'stomsize': chart['stomsize'] ?? '',
-            };
-            onChartSaved(chartData);
-          },
-          onDelete: () {
-            if (selectedChartId != null) {
-              onChartDeleted(selectedChartId!);
-            }
-          },
-        ),
-        SizedBox(height: 16),
-        Row(
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+    
+    if (keyboardHeight > 0) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+    }
+    
+    final widthRatio = screenWidth / 1920;
+    final heightRatio = screenHeight / 1200;
+    
+    return SingleChildScrollView(
+      controller: _scrollController,
+      child: Padding(
+        padding: EdgeInsets.only(bottom: keyboardHeight),
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              flex: 1,
-              child: PatientInfoSection(patient: patient),
-            ),
-            SizedBox(width: 16),
-            Expanded(
-              flex: 3,
-              child: FindingsSection(
-                chart: chart,
-                onFindingsChanged: (findings) {
-                  // findings 업데이트 로직
+            Container(
+              width: 1164 * widthRatio,
+              height: 590 * heightRatio,
+              child: ImageSection(
+                uploadedImagePath: widget.uploadedImagePath,
+                analysisImagePath: widget.analysisImagePath,
+                onUpload: widget.onNewAnalysis,
+                onSave: () {
+                  final chartData = {
+                    'originalImage': widget.uploadedImagePath,
+                    'resultImage': widget.analysisImagePath,
+                    'findings': widget.chart['findings'] ?? '',
+                    'painLevel': widget.chart['painLevel'] ?? '',
+                    'note': widget.patient?.note ?? '',
+                    'stomcount': widget.chart['stomcount'] ?? '',
+                    'stomsize': widget.chart['stomsize'] ?? '',
+                  };
+                  widget.onChartSaved(chartData);
                 },
-                isPatientSelected: patient != null,
+                onDelete: () {
+                  if (widget.selectedChartId != null) {
+                    widget.onChartDeleted(widget.selectedChartId!);
+                  }
+                },
+                containerWidth: 550 * widthRatio,
+                containerHeight: 490 * heightRatio,
               ),
+            ),
+            SizedBox(height: 16 * heightRatio),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                PatientInfoSection(patient: widget.patient),
+                SizedBox(width: 10 * widthRatio),
+                FindingsSection(
+                  chart: widget.chart,
+                  onFindingsChanged: (findings) {
+                    final updatedChart = Map<String, dynamic>.from(widget.chart);
+                    updatedChart['findings'] = findings;
+                    widget.updateChart(updatedChart);
+                  },
+                  isPatientSelected: widget.patient != null,
+                ),
+              ],
+            ),
+            SizedBox(height: 16 * heightRatio),
+            NoteSection(
+              initialNote: widget.chart['note'] ?? widget.patient?.note,
+              onNoteSaved: widget.onNoteSaved,
+              isPatientSelected: widget.patient != null,
             ),
           ],
         ),
-        SizedBox(height: 16),
-        NoteSection(
-          initialNote: chart['note'] ?? patient?.note,
-          onNoteSaved: onNoteSaved,
-          isPatientSelected: patient != null,
-        ),
-      ],
+      ),
     );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 }

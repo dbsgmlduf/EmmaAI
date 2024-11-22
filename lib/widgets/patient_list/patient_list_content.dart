@@ -18,6 +18,15 @@ class PatientListContent extends StatelessWidget {
     required this.infoFontSize,
   });
 
+  String _formatDate(String date) {
+    if (date.isEmpty) return '';
+    final parts = date.split('-');
+    if (parts.length != 3) return date;
+    
+    // YYYY-MM-DD에서 YY/MM/DD로 변환
+    return '${parts[0].substring(2)}/${parts[1]}/${parts[2]}';
+  }
+
   @override
   Widget build(BuildContext context) {
     final startIndex = currentPage * patientsPerPage;
@@ -37,7 +46,7 @@ class PatientListContent extends StatelessWidget {
             onTap: () => onPatientSelected(patient),
             title: Row(
               children: [
-                Expanded(child: Text(patient.date, textAlign: TextAlign.center,
+                Expanded(child: Text(_formatDate(patient.date), textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.white, fontSize: infoFontSize))),
                 Expanded(child: Text(patient.id, textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.white, fontSize: infoFontSize))),

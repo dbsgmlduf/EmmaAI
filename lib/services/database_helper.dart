@@ -243,4 +243,23 @@ Future<bool> deleteChart(String chartId) async {
     return false;
   }
 }
+
+Future<bool> saveImagePath(String patientId, String imagePath) async {
+  final db = await database;
+  try {
+    await db.insert(
+      'patientchart',
+      {
+        'patientId': patientId,
+        'originalImage': imagePath,
+        'date': DateTime.now().toIso8601String(),
+      },
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    return true;
+  } catch (e) {
+    print('이미지 경로 저장 중 오류 발생: $e');
+    return false;
+  }
+}
 } 

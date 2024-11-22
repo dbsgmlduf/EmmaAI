@@ -9,24 +9,26 @@ class ResultPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(bottom: 50),
-      padding: EdgeInsets.only(left: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('RESULT', 
+          Text('RESULT',
               style: TextStyle(
-                color: Color(0xFF40C2FF), 
-                fontSize: 24, 
-                fontWeight: FontWeight.bold
+                  color: Color(0xFF40C2FF),
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold
               )),
-          SizedBox(height: 16),
+          Divider(
+            color: Color(0xFF40C2FF),
+            thickness: 2,
+          ),
           Divider(
             color: Color(0xFF40C2FF),
             thickness: 2,
           ),
           SizedBox(height: 16),
           Padding(
-            padding: EdgeInsets.only(left: 16), 
+            padding: EdgeInsets.only(left: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -65,11 +67,20 @@ class HistoryPanel extends StatefulWidget {
 
 class _HistoryPanelState extends State<HistoryPanel> {
   int? selectedIndex;
+  int _currentPage = 0;
+  final int _itemsPerPage = 10;
 
   @override
   Widget build(BuildContext context) {
+    final int totalPages = (widget.chartHistory.length / _itemsPerPage).ceil();
+    final startIndex = _currentPage * _itemsPerPage;
+    final endIndex = (startIndex + _itemsPerPage < widget.chartHistory.length) 
+        ? startIndex + _itemsPerPage 
+        : widget.chartHistory.length;
+    
+    final currentPageItems = widget.chartHistory.sublist(startIndex, endIndex);
+
     return Container(
-      padding: EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -85,13 +96,18 @@ class _HistoryPanelState extends State<HistoryPanel> {
             color: Color(0xFF40C2FF),
             thickness: 2,
           ),
-          SizedBox(height: 16),
+          SizedBox(height: 0), // 두 줄 사이의 간격
+          Divider(
+            color: Color(0xFF40C2FF),
+            thickness: 2,
+          ),
           Expanded(
             child: ListView.builder(
-              itemCount: widget.chartHistory.length,
+              itemCount: currentPageItems.length,
               itemBuilder: (context, index) {
-                final chart = widget.chartHistory[index];
+                final chart = currentPageItems[index];
                 final isSelected = selectedIndex == index;
+                final globalIndex = startIndex + index + 1;
                 return GestureDetector(
                   onTap: () {
                     setState(() {
@@ -101,13 +117,13 @@ class _HistoryPanelState extends State<HistoryPanel> {
                   },
                   child: Container(
                     margin: EdgeInsets.only(bottom: 8),
-                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    padding: EdgeInsets.symmetric(vertical: 3, horizontal: 10),
                     decoration: BoxDecoration(
                       color: isSelected ? Color(0xFF40C2FF) : Colors.transparent,
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
-                      '${index + 1}. [ ${chart['displayDate']} ${chart['displayTime']} ]',
+                      '$globalIndex. [ ${chart['displayDate']} ${chart['displayTime']} ]',
                       style: TextStyle(
                         color: isSelected ? Colors.black : Colors.white,
                         fontSize: 14,
@@ -124,15 +140,15 @@ class _HistoryPanelState extends State<HistoryPanel> {
             children: [
               IconButton(
                 icon: Icon(Icons.arrow_back_ios, color: Color(0xFF40C2FF)),
-                onPressed: () {
-                  // 이전 페이지 로직
-                },
+                onPressed: _currentPage > 0 
+                    ? () => setState(() => _currentPage--) 
+                    : null,
               ),
               IconButton(
                 icon: Icon(Icons.arrow_forward_ios, color: Color(0xFF40C2FF)),
-                onPressed: () {
-                  // 다음 페이지 로직
-                },
+                onPressed: _currentPage < totalPages - 1 
+                    ? () => setState(() => _currentPage++) 
+                    : null,
               ),
             ],
           ),

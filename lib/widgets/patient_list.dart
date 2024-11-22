@@ -42,13 +42,13 @@ class _PatientListState extends State<PatientList> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     final listWidth = 395 / 1920 * screenWidth;
-    final listHeight = 895 / 1080 * screenHeight;
-    final headerFontSize = 18 / 1080 * screenHeight;
-    final infoFontSize = 17 / 1080 * screenHeight;
-    final buttonWidth = 330 / 1920 * screenWidth;
-    final buttonHeight = 55 / 1080 * screenHeight;
-    final iconSize = 30 / 1080 * screenHeight;
-    final textSize = 20 / 1080 * screenHeight;
+    final listHeight = 1010 / 1200 * screenHeight;
+    final headerFontSize = 22 / 1200 * screenHeight;
+    final infoFontSize = 18 / 1200 * screenHeight;
+    final buttonWidth = 350 / 1920 * screenWidth;
+    final buttonHeight = 44 / 1200 * screenHeight;
+    final iconSize = 30 / 1200 * screenHeight;
+    final textSize = 20 / 1200 * screenHeight;
 
     return Container(
       width: listWidth,
@@ -75,8 +75,8 @@ class _PatientListState extends State<PatientList> {
           _buildColumnHeaders(headerFontSize),
           Divider(
             color: Color(0xFF40C2FF),
-            endIndent: 40,
-            indent: 40,
+            endIndent: 10,
+            indent: 10,
             thickness: 3,
           ),
           PatientListContent(
@@ -88,12 +88,6 @@ class _PatientListState extends State<PatientList> {
             infoFontSize: infoFontSize,
           ),
           _buildPagination(),
-          Divider(
-            color: Color(0xFF40C2FF),
-            endIndent: 40,
-            indent: 40,
-            thickness: 3,
-          ),
           PatientListActions(
             isPatientSelected: widget.isPatientSelected,
             onImageDeleted: widget.onImageDeleted,

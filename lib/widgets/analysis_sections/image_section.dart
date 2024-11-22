@@ -7,6 +7,8 @@ class ImageSection extends StatelessWidget {
   final VoidCallback? onUpload;
   final VoidCallback? onSave;
   final VoidCallback? onDelete;
+  final double containerWidth;
+  final double containerHeight;
 
   const ImageSection({
     this.uploadedImagePath,
@@ -14,7 +16,38 @@ class ImageSection extends StatelessWidget {
     this.onUpload,
     this.onSave,
     this.onDelete,
+    required this.containerWidth,
+    required this.containerHeight,
   });
+
+  Widget _buildImage(String? imagePath) {
+    if (imagePath == null || imagePath.isEmpty) {
+      return Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: Color(0xFF40C2FF), width: 2),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Center(
+          child: Text('[ 사진 없음 ]',
+            style: TextStyle(color: Colors.red, fontSize: 16),
+          ),
+        ),
+      );
+    }
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: Color(0xFF40C2FF), width: 2),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: Image.file(
+          File(imagePath),
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,67 +57,81 @@ class ImageSection extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 1.0),
+            padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
               children: [
+                Icon(Icons.my_library_books_sharp, color: Color(0xFF40C2FF), size: 20),
+                SizedBox(width: 8),
+                Text(
+                  'Date of Consultation [ Today : ${DateTime.now().toString().substring(0, 10)} ]',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
+                Spacer(),
                 IconButton(
-                  icon: Icon(Icons.add, color: Colors.white),
+                  icon: Icon(Icons.add_circle_outline, color: Colors.white),
                   onPressed: onUpload,
+                  tooltip: '추가',
                   padding: EdgeInsets.zero,
                   constraints: BoxConstraints(),
                 ),
-                SizedBox(width: 8),
+                Text(
+                  '|',
+                  style: TextStyle(
+                    color: Color(0xFF40C2FF),
+                    fontSize: 30,
+                  ),
+                ),
                 IconButton(
-                  icon: Icon(Icons.save, color: Colors.white),
+                  icon: Icon(Icons.check_circle_outline, color: Colors.white),
                   onPressed: onSave,
+                  tooltip: '저장',
                   padding: EdgeInsets.zero,
                   constraints: BoxConstraints(),
                 ),
-                SizedBox(width: 8),
+                Text(
+                  '|',
+                  style: TextStyle(
+                    color: Color(0xFF40C2FF),
+                    fontSize: 30,
+                  ),
+                ),
                 IconButton(
-                  icon: Icon(Icons.delete, color: Colors.red),
+                  icon: Icon(Icons.delete_outline, color: Colors.white),
                   onPressed: onDelete,
+                  tooltip: '삭제',
                   padding: EdgeInsets.zero,
                   constraints: BoxConstraints(),
                 ),
               ],
             ),
           ),
-          Container(
-            height: 290,
-            padding: EdgeInsets.fromLTRB(1, 0, 1, 1),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 2, vertical: 1),
             child: Row(
               children: [
-                Expanded(child: _buildImageContainer('Original', uploadedImagePath)),
-                SizedBox(width: 16),
-                Expanded(child: _buildImageContainer('Analysis', analysisImagePath)),
+                Expanded(
+                  child: Container(
+                    width: containerWidth,
+                    height: containerHeight,
+                    child: _buildImage(uploadedImagePath),
+                  ),
+                ),
+                SizedBox(width: 8),
+                Expanded(
+                  child: Container(
+                    width: containerWidth,
+                    height: containerHeight,
+                    child: _buildImage(analysisImagePath),
+                  ),
+                ),
               ],
             ),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildImageContainer(String title, String? imagePath) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: Color(0xFF40C2FF), width: 2),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: imagePath == null
-          ? Center(child: Text('[ 사진 없음 ]', style: TextStyle(color: Colors.red)))
-          : GestureDetector(
-              onLongPress: () {},
-              child: Image.file(
-                File(imagePath),
-                fit: BoxFit.cover,
-                filterQuality: FilterQuality.high,
-              ),
-            ),
     );
   }
 } 
