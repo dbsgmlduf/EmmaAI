@@ -6,6 +6,16 @@ import '../services/patient_service.dart';
 import '../widgets/custom_header.dart';
 import '../widgets/analysis_text.dart';
 import '../services/database_helper.dart';
+import 'dart:io';
+import 'dart:async';
+import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
+import 'dart:convert';
+import 'package:path/path.dart' as path;
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
+import '../dialog/common_dialog.dart';
+
 
 class EmmaAIScreen extends StatefulWidget {
   final String licenseKey;
@@ -71,27 +81,115 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
       setState(() {
         chartHistory = updatedCharts;
       });
-      
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('이미지가 삭제되었습니다.')),
-      );
+      showCommonDialog(context, '완료', '이미지가 삭제되었습니다.');
     }
   }
 
   Future<void> analyzeImage() async {
-    if (selectedPatient != null && patientImages.containsKey(selectedPatient!.id)) {
-      // 여기에 서버에 이미지를 보내고 분석 결과를 받아오는 로직 구현
-      setState(() {
-        // 현재는 분석 결과 이미지 경로를 임의로 설정 작성.
-        patientAnalysisImages[selectedPatient!.id] = 'path/to/analyzed/image.jpg';
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('이미지 분석이 완료되었습니다.')),
+    if (selectedPatient == null || !patientImages.containsKey(selectedPatient!.id)) {
+      showCommonDialog(context, '알림', '분석할 이미지가 없습니다.\n먼저 이미지를 업로드해주세요.');
+      return;
+    }
+
+    try {
+      // 로딩 다이얼로그 표시
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) => WillPopScope(
+          onWillPop: () async => false,
+          child: Dialog(
+            child: Container(
+              padding: EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(height: 20),
+                  Text('결과 대기중입니다...'),
+                ],
+              ),
+            ),
+          ),
+        ),
       );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('분석할 이미지가 없습니다. 먼저 이미지를 업로드해주세요.')),
+
+      // API 요청 준비
+      final uri = Uri.parse('https://api.emmaet.com/mouth');
+      final request = http.MultipartRequest('POST', uri)
+        ..headers.addAll({
+          'Content-Type': 'multipart/form-data',
+          'Accept': '*/*',
+        });
+
+      // 이미지 파일 처리
+      final imageFile = File(patientImages[selectedPatient!.id]!);
+      if (!await imageFile.exists()) {
+        throw Exception('이미지 파일을 찾을 수 없습니다.');
+      }
+
+      final stream = http.ByteStream(imageFile.openRead());
+      final length = await imageFile.length();
+
+      final multipartFile = http.MultipartFile(
+        'file',
+        stream,
+        length,
+        filename: path.basename(imageFile.path),
+        contentType: MediaType('image', 'jpeg'),
       );
+      request.files.add(multipartFile);
+
+      // API 요청 전송 및 응답 처리
+      final response = await request.send().timeout(
+        Duration(seconds: 30),
+        onTimeout: () {
+          throw TimeoutException('API 요청 시간이 초과되었습니다.');
+        },
+      );
+
+      if (!context.mounted) return;
+      Navigator.pop(context); // 로딩 다이얼로그 닫기
+
+      if (response.statusCode == 200) {
+        final responseData = await response.stream.bytesToString();
+        final jsonResponse = json.decode(responseData);
+
+        await _processAnalysisResult(jsonResponse);
+      } else {
+        throw Exception('API 요청 실패: ${response.statusCode}');
+      }
+    } catch (e) {
+      if (context.mounted) {
+        Navigator.pop(context); // 로딩 다이얼로그 닫기
+        showCommonDialog(context, '오류', '이미지 분석 중 오류가 발생했습니다.\n$e');
+      }
+    }
+  }
+
+  Future<void> _processAnalysisResult(Map<String, dynamic> jsonResponse) async {
+    final appDir = await getApplicationDocumentsDirectory();
+    final fileName = "EMMA_Analysis_${selectedPatient!.id}_${DateTime.now().millisecondsSinceEpoch}.jpg";
+    final newPath = path.join(appDir.path, 'analysis_images', fileName);
+
+    final analysisDir = Directory(path.join(appDir.path, 'analysis_images'));
+    if (!await analysisDir.exists()) {
+      await analysisDir.create(recursive: true);
+    }
+
+    final imageBytes = base64Decode(jsonResponse['masked_image']);
+    await File(newPath).writeAsBytes(imageBytes);
+
+    setState(() {
+      patientAnalysisImages[selectedPatient!.id] = newPath;
+      chart = {
+        'stomcount': jsonResponse['stom_count']?.toString() ?? '0',
+        'stomsize': jsonResponse['stom_size']?.toString() ?? '0',
+      };
+    });
+
+    if (context.mounted) {
+      showCommonDialog(context, '완료', '분석이 완료되었습니다.');
     }
   }
 
@@ -104,9 +202,7 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
           selectedPatient = patients[index];
         }
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('노트가 저장되었습니다.')),
-      );
+      showCommonDialog(context, '완료', '노트가 저장되었습니다.');
     }
   }
 
@@ -126,18 +222,10 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
             chartHistory = [];
           }
         });
-        
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('환자가 삭제되었습니다.')),
-        );
+        showCommonDialog(context, '완료', '환자가 삭제되었습니다.');
       } else {
         print('환자 정보 삭제 실패: patientId=$patientId, licenseKey=${widget.licenseKey}');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('환자 정보 삭제 중 오류가 발생했습니다.'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        showCommonDialog(context, '오류', '환자 정보 삭제 중 오류가 발생했습니다.', isError: true);
       }
     }
   }
@@ -170,17 +258,9 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
         setState(() {
           chartHistory = updatedCharts;
         });
-        
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('차트가 저장되었습니다.')),
-        );
+        showCommonDialog(context, '완료', '차트가 저장되었습니다.');
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('차트 저장 중 오류가 발생했습니다.'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        showCommonDialog(context, '오류', '차트 저장 중 오류가 발생했습니다.', isError: true);
       }
     }
   }
@@ -193,10 +273,7 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
       setState(() {
         chartHistory = updatedCharts;
       });
-      
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('기록이 삭제되었습니다.')),
-      );
+      showCommonDialog(context, '완료', '기록이 삭제되었습니다.');
     }
   }
 

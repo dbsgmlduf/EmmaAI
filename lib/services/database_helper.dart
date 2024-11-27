@@ -11,7 +11,7 @@ class DatabaseHelper {
 
   Future<Database> get database async {
     if (_database != null) return _database!;
-    _database = await _initDB('emma_database.db');
+    _database = await _initDB('stomatitis.db');
     return _database!;
   }
 
@@ -46,7 +46,7 @@ class DatabaseHelper {
       FOREIGN KEY (licenseKey) REFERENCES users (licenseKey)
     )
   ''');
-  
+
   await db.execute('''
   CREATE TABLE patientchart (
     chartId INTEGER PRIMARY KEY AUTOINCREMENT,
