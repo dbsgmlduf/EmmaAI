@@ -12,33 +12,33 @@ class ResultPanel extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('RESULT',
-              style: TextStyle(
-                  color: Color(0xFF40C2FF),
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold
-              )),
-          Divider(
-            color: Color(0xFF40C2FF),
-            thickness: 2,
+          Text(
+            'RESULT',
+            style: TextStyle(
+              color: Color(0xFF40C2FF),
+              fontSize: 24,
+              fontWeight: FontWeight.bold
+            )
           ),
-          Divider(
-            color: Color(0xFF40C2FF),
-            thickness: 2,
-          ),
+          Divider(color: Color(0xFF40C2FF), thickness: 2),
+          Divider(color: Color(0xFF40C2FF), thickness: 2),
           SizedBox(height: 16),
           Padding(
             padding: EdgeInsets.only(left: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('STOM COUNT: ${chart['stomCount'] ?? 0}',
-                    style: TextStyle(color: Colors.white)),
+                Text(
+                  '구내염 개수: ${chart['stomcount'] ?? '0'}',
+                  style: TextStyle(color: Colors.white)
+                ),
                 SizedBox(height: 8),
                 Divider(color: Colors.white, thickness: 1),
                 SizedBox(height: 8),
-                Text('STOM SIZE:',
-                    style: TextStyle(color: Colors.white)),
+                Text(
+                  '구내염 크기: ${chart['stomsize'] ?? '0'}',
+                  style: TextStyle(color: Colors.white)
+                ),
               ],
             ),
           ),
