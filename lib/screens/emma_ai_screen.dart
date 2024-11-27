@@ -72,15 +72,33 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
   void deleteImage() async {
     if (selectedPatient != null) {
       setState(() {
+        // 이미지 경로만 초기화
         patientImages.remove(selectedPatient!.id);
         patientAnalysisImages.remove(selectedPatient!.id);
+        
+        // 차트 및 분석 결과 초기화
+        chart = {
+          'stomcount': '0',
+          'stomsize': '0',
+          'findings': '',
+          'painLevel': '0',
+          'note': '',
+          'chartId': null,
+          'originalImage': null,
+          'resultImage': null,
+        };
+        
+        // 환자 노트 초기화
+        int index = patients.indexWhere((p) => p.id == selectedPatient!.id);
+        if (index != -1) {
+          patients[index] = patients[index].copyWith(note: '');
+          selectedPatient = patients[index];
+        }
+        
+        // 히스토리 초기화
+        chartHistory = [];
       });
       
-      // 히스토리 즉시 업데이트
-      final updatedCharts = await DatabaseHelper.instance.getPatientCharts(selectedPatient!.id);
-      setState(() {
-        chartHistory = updatedCharts;
-      });
       showCommonDialog(context, '완료', '이미지가 삭제되었습니다.');
     }
   }
