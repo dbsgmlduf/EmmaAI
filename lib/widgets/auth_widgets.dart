@@ -7,15 +7,15 @@ Widget buildAuthTextField(String hintText, IconData icon, double scale, TextEdit
     child: TextFormField(
       controller: controller,
       obscureText: isPassword,
-      style: TextStyle(color: Colors.white, fontSize: 16 * scale),
+      style: TextStyle(color: Colors.white, fontSize: 25 * scale),
       decoration: InputDecoration(
         hintText: hintText,
-        prefixIcon: Icon(icon, color: Colors.white, size: 24 * scale),
-        hintStyle: TextStyle(color: Colors.grey, fontSize: 16 * scale),
+        prefixIcon: Icon(icon, color: Colors.white, size: 25 * scale),
+        hintStyle: TextStyle(color: Colors.grey, fontSize: 25 * scale),
         filled: true,
-        fillColor: Color(0xFF4A4A4A),
+        fillColor: Color(0xFF454545),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10 * scale),
+          borderRadius: BorderRadius.circular(17 * scale),
           borderSide: BorderSide.none,
         ),
         contentPadding: EdgeInsets.symmetric(vertical: 15 * scale, horizontal: 20 * scale),
@@ -35,11 +35,11 @@ Widget buildAuthButton(String text, double scale, VoidCallback onPressed) {
     width: 600 * scale,
     height: 70 * scale,
     child: ElevatedButton(
-      child: Text(text, style: TextStyle(fontSize: 18 * scale)),
+      child: Text(text, style: TextStyle(fontSize: 27 * scale, color: Colors.white)),
       style: ElevatedButton.styleFrom(
         backgroundColor: Color(0xFF40C2FF),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10 * scale),
+          borderRadius: BorderRadius.circular(17 * scale),
         ),
       ),
       onPressed: onPressed,

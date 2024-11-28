@@ -33,7 +33,6 @@ class _AccountDialogState extends State<AccountDialog> {
           child: Material(
             type: MaterialType.transparency,
             child: Container(
-              width: 300,
               padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.black54,
@@ -77,18 +76,18 @@ class _AccountDialogState extends State<AccountDialog> {
           "USER Information", 
           style: TextStyle(
             color: Colors.white,
-            fontSize: 18, 
+            fontSize: 22,
             fontWeight: FontWeight.bold
           )
         ),
         SizedBox(height: 10),
         Text(
           "Name: ${widget.name}", 
-          style: TextStyle(color: Colors.white)
+          style: TextStyle(color: Colors.white, fontSize: 22)
         ),
         Text(
           "Email: ${widget.email}", 
-          style: TextStyle(color: Colors.white)
+          style: TextStyle(color: Colors.white, fontSize: 22)
         ),
       ],
     );
@@ -100,10 +99,10 @@ class _AccountDialogState extends State<AccountDialog> {
         SizedBox(height: 16),
         buildAuthTextField('Old Password', Icons.lock, 0.5, 
             oldPasswordController, isPassword: true),
-        SizedBox(height: 8),
+        SizedBox(height: 16),
         buildAuthTextField('New Password', Icons.lock, 0.5, 
             newPasswordController, isPassword: true),
-        SizedBox(height: 8),
+        SizedBox(height: 16),
         buildAuthTextField('Confirm Password', Icons.lock, 0.5, 
             confirmPasswordController, isPassword: true),
         SizedBox(height: 16),
@@ -113,12 +112,12 @@ class _AccountDialogState extends State<AccountDialog> {
             TextButton(
               onPressed: _handlePasswordChange,
               child: Text("Confirm", 
-                  style: TextStyle(color: Color(0xFF40C2FF))),
+                  style: TextStyle(color: Color(0xFF40C2FF),fontSize: 22)),
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
               child: Text("Cancel", 
-                  style: TextStyle(color: Colors.white)),
+                  style: TextStyle(color: Colors.white,fontSize: 22)),
             ),
           ],
         ),
@@ -130,7 +129,7 @@ class _AccountDialogState extends State<AccountDialog> {
     return TextButton(
       onPressed: () => setState(() => showPasswordFields = true),
       child: Text("Change Password", 
-          style: TextStyle(color: Color(0xFF40C2FF))),
+          style: TextStyle(color: Color(0xFF40C2FF),fontSize: 22)),
     );
   }
 
@@ -144,7 +143,7 @@ class _AccountDialogState extends State<AccountDialog> {
         );
       },
       child: Text("Logout", 
-          style: TextStyle(color: Color(0xFF40C2FF))),
+          style: TextStyle(color: Color(0xFF40C2FF),fontSize: 22)),
     );
   }
 
@@ -168,8 +167,8 @@ class _AccountDialogState extends State<AccountDialog> {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Colors.black87,
-          title: Text(title, style: TextStyle(color: Colors.white)),
-          content: Text(message, style: TextStyle(color: Colors.white)),
+          title: Text(title, style: TextStyle(color: Colors.white,fontSize: 22)),
+          content: Text(message, style: TextStyle(color: Colors.white,fontSize: 22)),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),

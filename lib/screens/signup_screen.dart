@@ -72,12 +72,12 @@ class _SignupScreenState extends State<SignupScreen> {
                 Align(
                   alignment: Alignment.topCenter,
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 50),
+                    padding: const EdgeInsets.only(top: 90),
                     child: Text(
-                      'emma ai',
+                      'Emma ai',
                       style: TextStyle(
                         color: Color(0xFF40C2FF),
-                        fontSize: 48,
+                        fontSize: 60,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -86,7 +86,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 Center(
                   child: Container(
                     width: 786 * scale,
-                    height: 621 * scale,
+                    height: 620 * scale,
                     decoration: BoxDecoration(
                       color: Color(0xFF6C6C6C),
                       borderRadius: BorderRadius.all(Radius.circular(47 * scale)),
@@ -109,11 +109,27 @@ class _SignupScreenState extends State<SignupScreen> {
                             SizedBox(height: 20 * scale),
                             buildAuthButton('Sign up', scale, _signUp),
                             SizedBox(height: 10 * scale),
-                            TextButton(
-                              child: Text('Login', style: TextStyle(color: Color(0xFFFFFFFF), fontSize: 20 * scale, decoration: TextDecoration.underline)),
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
+                            SizedBox(height: 10 * scale),
+                            Container(
+                              width: 600 * scale,
+                              child: Align(
+                                alignment: Alignment.centerRight,
+                                child: TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text(
+                                    'Login',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 25 * scale,
+                                      decoration: TextDecoration.underline,
+                                      decorationColor: Colors.white,
+                                      decorationThickness: 1,
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ),
                           ],
                         ),
@@ -125,28 +141,10 @@ class _SignupScreenState extends State<SignupScreen> {
                   alignment: Alignment.bottomCenter,
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 80),
-                    child: RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                          children: [
-                            TextSpan(
-                                text: 'emma\n',
-                                style: TextStyle(
-                                  color: Color(0xFF40C2FF),
-                                  fontSize: 45,
-                                  fontWeight: FontWeight.bold,
-                                )
-                            ),
-                            TextSpan(
-                                text: 'healthcare',
-                                style: TextStyle(
-                                  color: Color(0xFFB3B3B4),
-                                  fontSize: 30,
-                                  fontWeight: FontWeight.bold,
-                                )
-                            )
-                          ]
-                      ),
+                    child: Image.asset(
+                      'assets/logo/emmaLogo.png',
+                      width: 200 * scale,  // scale 값을 적용하여 반응형으로 설정
+                      fit: BoxFit.contain,
                     ),
                   ),
                 )

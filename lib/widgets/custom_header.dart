@@ -62,7 +62,6 @@ class _CustomHeaderState extends State<CustomHeader> {
         splashRadius: 28,
         onPressed: () {
           if (icon == Icons.settings) {
-            print("hell");
             Navigator.of(context).push(
               DialogRoute(
                 context: context,
