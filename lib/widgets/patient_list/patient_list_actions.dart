@@ -105,19 +105,19 @@ class _PatientListActionsState extends State<PatientListActions> {
             'CAMERA',
             onPressed: widget.isPatientSelected ? _takePhoto : null,
           ),
-          SizedBox(height: 5),
+          SizedBox(height: 20),
           _buildActionButton(
             Icons.image_outlined,
             'IMAGE',
             onPressed: widget.isPatientSelected ? _uploadImage : null,
           ),
-          SizedBox(height: 5),
+          SizedBox(height: 20),
           _buildActionButton(
             Icons.image_not_supported_outlined,
             'DELETE',
             onPressed: widget.isPatientSelected ? widget.onImageDeleted : null,
           ),
-          SizedBox(height: 5),
+          SizedBox(height: 20),
           _buildActionButton(
             Icons.search,
             'ANALYZE',
@@ -136,9 +136,7 @@ class _PatientListActionsState extends State<PatientListActions> {
         border: Border.all(color: Color(0xFF40C2FF), width: 2),
         borderRadius: BorderRadius.circular(widget.buttonHeight / 2),
       ),
-      child: ElevatedButton.icon(
-        icon: Icon(icon, color: onPressed != null ? Color(0xFF40C2FF) : Colors.grey, size: widget.iconSize),
-        label: Text(text, style: TextStyle(color: onPressed != null ? Color(0xFF40C2FF) : Colors.grey, fontSize: widget.textSize)),
+      child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,
@@ -148,6 +146,26 @@ class _PatientListActionsState extends State<PatientListActions> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(widget.buttonHeight / 2),
           ),
+        ),
+        child: Row(
+          children: [
+            SizedBox(width: widget.buttonWidth * 0.3),  // 왼쪽 여백
+            Icon(
+              icon,
+              color: onPressed != null ? Color(0xFF40C2FF) : Colors.grey,
+              size: widget.iconSize
+            ),
+            SizedBox(width: widget.buttonWidth * 0.05),  // 아이콘과 텍스트 사이 간격 조정
+            Expanded(
+              child: Text(
+                text,
+                style: TextStyle(
+                  color: onPressed != null ? Color(0xFF40C2FF) : Colors.grey,
+                  fontSize: widget.textSize
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

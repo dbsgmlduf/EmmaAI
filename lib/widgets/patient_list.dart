@@ -43,11 +43,11 @@ class _PatientListState extends State<PatientList> {
     final screenHeight = MediaQuery.of(context).size.height;
     final listWidth = 384 / 1920 * screenWidth;
     final listHeight = 1030 / 1200 * screenHeight;
-    final headerFontSize = 22 / 1200 * screenHeight;
-    final infoFontSize = 18 / 1200 * screenHeight;
+    final headerFontSize = 22 / 1300 * screenHeight;
+    final infoFontSize = 18 / 1600 * screenHeight;
     final buttonWidth = 350 / 1920 * screenWidth;
-    final buttonHeight = 44 / 1200 * screenHeight;
-    final iconSize = 30 / 1200 * screenHeight;
+    final buttonHeight = 44 / 1300 * screenHeight;
+    final iconSize = 40 / 1300 * screenHeight;
     final textSize = 20 / 1200 * screenHeight;
 
     return Container(
@@ -80,19 +80,23 @@ class _PatientListState extends State<PatientList> {
             onPatientSelected: widget.onPatientSelected,
             currentPage: _currentPage,
             patientsPerPage: _patientsPerPage,
-            infoFontSize: infoFontSize,
+            infoFontSize: 18,
           ),
           _buildPagination(),
-          PatientListActions(
+          Container(
+            padding : EdgeInsets.fromLTRB(0, 20, 0,20),
+            child: PatientListActions(
             isPatientSelected: widget.isPatientSelected,
             onImageDeleted: widget.onImageDeleted,
             onImageUploaded: widget.onImageUploaded,
             onImageAnalyzed: widget.onImageAnalyzed,
             buttonWidth: buttonWidth,
             buttonHeight: buttonHeight,
-            iconSize: iconSize,
-            textSize: textSize,
-          ),
+            iconSize: 40,
+            textSize: 20,
+            ),
+          )
+
         ],
       ),
     );
@@ -127,14 +131,14 @@ class _PatientListState extends State<PatientList> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           IconButton(
-            icon: Icon(Icons.arrow_back, color: Color(0xFF40C2FF)),
+            icon: Icon(Icons.arrow_back, color: Color(0xFF40C2FF),size: 50,),
             onPressed: _currentPage > 0
                 ? () => setState(() => _currentPage--)
                 : null,
           ),
           Text('|', style: TextStyle(color: Color(0xFF40C2FF), fontSize: 30)),
           IconButton(
-            icon: Icon(Icons.arrow_forward, color: Color(0xFF40C2FF)),
+            icon: Icon(Icons.arrow_forward, color: Color(0xFF40C2FF), size: 50,),
             onPressed: (_currentPage + 1) * _patientsPerPage < widget.patients.length
                 ? () => setState(() => _currentPage++)
                 : null,
