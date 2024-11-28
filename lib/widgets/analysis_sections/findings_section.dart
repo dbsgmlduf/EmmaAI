@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class FindingsSection extends StatefulWidget {
   final Map<String, dynamic> chart;
-  final Function(String) onFindingsChanged;
+  final Function(Map<String, dynamic>) onFindingsChanged;
   final bool isPatientSelected;
 
   const FindingsSection({
@@ -16,28 +16,20 @@ class FindingsSection extends StatefulWidget {
 }
 
 class _FindingsSectionState extends State<FindingsSection> {
-  bool _isAphthousStomatitis = false;
-  bool _isOralThrush = false;
-  bool _isOralHerpes = false;
-  double _painLevel = 5.0;
+  void _onSwitchChanged(String finding) {
+    if (!widget.isPatientSelected || widget.chart['chartId'] != null) return;
 
-  @override
-  void initState() {
-    super.initState();
-    _updateValuesFromChart();
+    final updatedChart = Map<String, dynamic>.from(widget.chart);
+    updatedChart['findings'] = finding;
+    widget.onFindingsChanged(updatedChart);
   }
 
-  void _updateValuesFromChart() {
-    if (widget.chart['painLevel'] != null) {
-      _painLevel = double.parse(widget.chart['painLevel'].toString());
-    }
-    
-    if (widget.chart['findings'] != null) {
-      String findings = widget.chart['findings'].toString();
-      _isAphthousStomatitis = findings == '1';
-      _isOralHerpes = findings == '2';
-      _isOralThrush = findings == '3';
-    }
+  void _onPainLevelChanged(double value) {
+    if (!widget.isPatientSelected || widget.chart['chartId'] != null) return;
+
+    final updatedChart = Map<String, dynamic>.from(widget.chart);
+    updatedChart['painLevel'] = value.toString();
+    widget.onFindingsChanged(updatedChart);
   }
 
   @override
@@ -45,7 +37,13 @@ class _FindingsSectionState extends State<FindingsSection> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     final fontSize = 22 * (screenHeight / 1200);
-    
+
+    final isAphthousStomatitis = widget.chart['findings'] == '1';
+    final isOralThrush = widget.chart['findings'] == '2';
+    final isOralHerpes = widget.chart['findings'] == '3';
+    final painLevel = widget.chart['painLevel'] != null ?
+    double.tryParse(widget.chart['painLevel'].toString()) ?? 5.0 : 5.0;
+
     return Container(
       width: MediaQuery.of(context).size.width * (834/1920),
       height: MediaQuery.of(context).size.height * (180/1200),
@@ -65,45 +63,51 @@ class _FindingsSectionState extends State<FindingsSection> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Flexible(
-                  child: Text('Aphthous stomatitis', 
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: _isAphthousStomatitis ? Color(0xFFFFAE00) : Colors.white,
-                      fontSize: fontSize
-                    )
+                  child: Text('Aphthous stomatitis',
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          color: isAphthousStomatitis ? Color(0xFFFFAE00) : Colors.white,
+                          fontSize: fontSize
+                      )
                   ),
                 ),
                 SizedBox(
                   width: 75 * (screenWidth / 1920),
                   height: 40 * (screenHeight / 1200),
                   child: Switch(
-                    value: _isAphthousStomatitis,
-                    onChanged: null,
+                    value: isAphthousStomatitis,
+                    onChanged: widget.isPatientSelected && widget.chart['chartId'] == null
+                        ? (value) => _onSwitchChanged('1')
+                        : null,
                     activeColor: Color(0xFF40C2FF),
                   ),
                 ),
                 SizedBox(width: 16),
-                Text('Oral thrush', 
-                  style: TextStyle(
-                    color: _isOralThrush ? Color(0xFFFFAE00) : Colors.white,
-                    fontSize: fontSize
-                  )
+                Text('Oral thrush',
+                    style: TextStyle(
+                        color: isOralThrush ? Color(0xFFFFAE00) : Colors.white,
+                        fontSize: fontSize
+                    )
                 ),
                 Switch(
-                  value: _isOralThrush,
-                  onChanged: null,
+                  value: isOralThrush,
+                  onChanged: widget.isPatientSelected && widget.chart['chartId'] == null
+                      ? (value) => _onSwitchChanged('2')
+                      : null,
                   activeColor: Color(0xFF40C2FF),
                 ),
                 SizedBox(width: 16),
-                Text('Oral herpes', 
-                  style: TextStyle(
-                    color: _isOralHerpes ? Color(0xFFFFAE00) : Colors.white,
-                    fontSize: fontSize
-                  )
+                Text('Oral herpes',
+                    style: TextStyle(
+                        color: isOralHerpes ? Color(0xFFFFAE00) : Colors.white,
+                        fontSize: fontSize
+                    )
                 ),
                 Switch(
-                  value: _isOralHerpes,
-                  onChanged: null,
+                  value: isOralHerpes,
+                  onChanged: widget.isPatientSelected && widget.chart['chartId'] == null
+                      ? (value) => _onSwitchChanged('3')
+                      : null,
                   activeColor: Color(0xFF40C2FF),
                 ),
               ],
@@ -112,25 +116,32 @@ class _FindingsSectionState extends State<FindingsSection> {
           Expanded(
             child: Row(
               children: [
-                Text('Pain Level:', 
-                  style: TextStyle(color: Color(0xFF40C2FF), fontSize: fontSize)
+                Text(
+                    'Pain Level',
+                    style: TextStyle(color: Color(0xFF40C2FF), fontSize: fontSize)
+                ),
+                Text(
+                    '${painLevel.round()}',
+                    style: TextStyle(color: Colors.white, fontSize: fontSize)
                 ),
                 SizedBox(width: 16),
                 Expanded(
                   child: SizedBox(
                     height: 6 * (screenHeight / 1200),
                     child: Slider(
-                      value: _painLevel,
-                      min: 0,
+                      value: painLevel,
+                      min: 1,
                       max: 10,
-                      divisions: 10,
-                      label: _painLevel.round().toString(),
-                      onChanged: widget.isPatientSelected ? (value) {
-                        setState(() => _painLevel = value);
-                        widget.onFindingsChanged(value.toString());
-                      } : null,
+                      divisions: 9,
+                      label: painLevel.round().toString(),
                       activeColor: Color(0xFF40C2FF),
                       inactiveColor: Colors.grey,
+                      onChanged: widget.isPatientSelected && widget.chart['chartId'] == null
+                          ? _onPainLevelChanged
+                          : null,
+                      thumbColor: Color(0xFF40C2FF),
+                      overlayColor: MaterialStateProperty.all(Color(0xFF40C2FF).withOpacity(0.2)),
+                      secondaryActiveColor: Color(0xFF40C2FF),
                     ),
                   ),
                 ),

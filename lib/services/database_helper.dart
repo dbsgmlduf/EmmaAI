@@ -36,7 +36,7 @@ class DatabaseHelper {
     )
   ''');
 
-  await db.execute('''
+    await db.execute('''
     CREATE TABLE patients (
       patientId TEXT PRIMARY KEY,
       date TEXT NOT NULL,
@@ -47,7 +47,7 @@ class DatabaseHelper {
     )
   ''');
 
-  await db.execute('''
+    await db.execute('''
   CREATE TABLE patientchart (
     chartId INTEGER PRIMARY KEY AUTOINCREMENT,
     patientId TEXT NOT NULL,
@@ -175,91 +175,108 @@ class DatabaseHelper {
   }
 
   Future<bool> insertPatientChart(String patientId, Map<String, dynamic> chartData) async {
-  final db = await database;
-  try {
-    await db.insert('patientchart', {
-      'patientId': patientId,
-      'originalImage': chartData['originalImage'],
-      'resultImage': chartData['resultImage'],
-      'findings': chartData['findings'],
-      'painLevel': chartData['painLevel'],
-      'note': chartData['note'],
-      'stomcount': chartData['stomcount'],
-      'date': DateTime.now().toIso8601String(),
-      'stomsize': chartData['stomsize'],
-    });
-    return true;
-  } catch (e) {
-    print('차트 추가 중 오류 발생: $e');
-    return false;
+    final db = await database;
+    try {
+      await db.insert('patientchart', {
+        'patientId': patientId,
+        'originalImage': chartData['originalImage'],
+        'resultImage': chartData['resultImage'],
+        'findings': chartData['findings'],
+        'painLevel': chartData['painLevel'],
+        'note': chartData['note'],
+        'stomcount': chartData['stomcount'],
+        'date': DateTime.now().toIso8601String(),
+        'stomsize': chartData['stomsize'],
+      });
+      return true;
+    } catch (e) {
+      print('차트 추가 중 오류 발생: $e');
+      return false;
+    }
   }
-}
 
-Future<List<Map<String, dynamic>>> getPatientCharts(String patientId) async {
-  final db = await database;
-  final charts = await db.query(
-    'patientchart',
-    where: 'patientId = ?',
-    whereArgs: [patientId],
-    orderBy: 'date DESC',
-  );
-  
-  return charts.map((chart) {
-    final date = DateTime.parse(chart['date'] as String);
-    return {
-      ...chart,
-      'displayDate': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
-      'displayTime': '${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}',
-    };
-  }).toList();
-}
-
-Future<bool> deletePatientCharts(String patientId) async {
-  final db = await database;
-  try {
-    await db.delete(
+  Future<List<Map<String, dynamic>>> getPatientCharts(String patientId) async {
+    final db = await database;
+    final charts = await db.query(
       'patientchart',
       where: 'patientId = ?',
       whereArgs: [patientId],
+      orderBy: 'date DESC',
     );
-    return true;
-  } catch (e) {
-    print('차트 삭제 중 오류 발생: $e');
-    return false;
-  }
-}
 
-Future<bool> deleteChart(String chartId) async {
-  final db = await database;
-  try {
-    await db.delete(
-      'patientchart',
-      where: 'chartId = ?',
-      whereArgs: [chartId],
-    );
-    return true;
-  } catch (e) {
-    print('차트 삭제 중 오류 발생: $e');
-    return false;
+    return charts.map((chart) {
+      final date = DateTime.parse(chart['date'] as String);
+      return {
+        ...chart,
+        'displayDate': '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
+        'displayTime': '${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}',
+      };
+    }).toList();
   }
-}
 
-Future<bool> saveImagePath(String patientId, String imagePath) async {
-  final db = await database;
-  try {
-    await db.insert(
-      'patientchart',
-      {
-        'patientId': patientId,
-        'originalImage': imagePath,
-        'date': DateTime.now().toIso8601String(),
-      },
-      conflictAlgorithm: ConflictAlgorithm.replace,
+  Future<bool> deletePatientCharts(String patientId) async {
+    final db = await database;
+    try {
+      await db.delete(
+        'patientchart',
+        where: 'patientId = ?',
+        whereArgs: [patientId],
+      );
+      return true;
+    } catch (e) {
+      print('차트 삭제 중 오류 발생: $e');
+      return false;
+    }
+  }
+
+  Future<bool> deleteChart(String chartId) async {
+    final db = await database;
+    try {
+      await db.delete(
+        'patientchart',
+        where: 'chartId = ?',
+        whereArgs: [chartId],
+      );
+      return true;
+    } catch (e) {
+      print('차트 삭제 중 오류 발생: $e');
+      return false;
+    }
+  }
+
+  Future<bool> saveImagePath(String patientId, String imagePath) async {
+    final db = await database;
+    try {
+      await db.insert(
+        'patientchart',
+        {
+          'patientId': patientId,
+          'originalImage': imagePath,
+          'date': DateTime.now().toIso8601String(),
+        },
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+      return true;
+    } catch (e) {
+      print('이미지 경로 저장 중 오류 발생: $e');
+      return false;
+    }
+  }
+
+  Future<String> getLatestStomCount(String patientId) async {
+    final db = await database;
+    final charts = await db.query(
+        'patientchart',
+        columns: ['stomcount'],
+        where: 'patientId = ?',
+        whereArgs: [patientId],
+        orderBy: 'date DESC',
+        limit: 1
     );
-    return true;
-  } catch (e) {
-    print('이미지 경로 저장 중 오류 발생: $e');
-    return false;
+
+    if (charts.isNotEmpty && charts.first['stomcount'] != null) {
+      return charts.first['stomcount'] as String;
+    }
+    return '0';  // 기본값으로 '0' 반환
   }
 }
-} 

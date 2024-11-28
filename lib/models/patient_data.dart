@@ -6,6 +6,7 @@ class Patient {
   final String result;
   final String resultNo;
   final String note;
+  final String stomcount;
 
   Patient({
     required this.id,
@@ -15,6 +16,7 @@ class Patient {
     this.result = '',
     this.resultNo = 'inconclusive',
     this.note = '',
+    this.stomcount = '',
   });
 
   factory Patient.fromJson(Map<String, dynamic> json) {
@@ -26,6 +28,7 @@ class Patient {
       result: json['result'] ?? '',
       resultNo: json['resultNo'] ?? 'inconclusive',
       note: json['note'] ?? '',
+      stomcount: json['stomcount'] ?? '',
     );
   }
 
@@ -38,6 +41,7 @@ class Patient {
       'result': result,
       'resultNo': resultNo,
       'note': note,
+      'stomcount': stomcount,
     };
   }
 
@@ -49,6 +53,7 @@ class Patient {
     String? result,
     String? resultNo,
     String? note,
+    String? stomcount,
   }) {
     return Patient(
       id: id ?? this.id,
@@ -58,6 +63,7 @@ class Patient {
       result: result ?? this.result,
       resultNo: resultNo ?? this.resultNo,
       note: note ?? this.note,
+      stomcount: stomcount ?? this.stomcount,
     );
   }
 }

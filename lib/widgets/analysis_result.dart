@@ -54,14 +54,14 @@ class _AnalysisResultState extends State<AnalysisResult> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
-    
+
     if (keyboardHeight > 0) {
       WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
     }
-    
+
     final widthRatio = screenWidth / 1920;
     final heightRatio = screenHeight / 1200;
-    
+
     return SingleChildScrollView(
       controller: _scrollController,
       child: Padding(
@@ -105,10 +105,18 @@ class _AnalysisResultState extends State<AnalysisResult> {
                 SizedBox(width: 10 * widthRatio),
                 FindingsSection(
                   chart: widget.chart,
-                  onFindingsChanged: (findings) {
-                    final updatedChart = Map<String, dynamic>.from(widget.chart);
-                    updatedChart['findings'] = findings;
-                    widget.updateChart(updatedChart);
+                  onFindingsChanged: (updatedChart) {
+                    final newChart = {
+                      ...widget.chart,
+                      'findings': updatedChart['findings'],
+                      'painLevel': updatedChart['painLevel'],
+                      'originalImage': widget.uploadedImagePath,
+                      'resultImage': widget.analysisImagePath,
+                      'note': widget.patient?.note ?? '',
+                      'stomcount': widget.chart['stomcount'] ?? '',
+                      'stomsize': widget.chart['stomsize'] ?? '',
+                    };
+                    widget.updateChart(newChart);
                   },
                   isPatientSelected: widget.patient != null,
                 ),
