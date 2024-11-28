@@ -19,35 +19,40 @@ class CustomHeader extends StatefulWidget {
 class _CustomHeaderState extends State<CustomHeader> {
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
     return Container(
       height: 100,
       color: Colors.black,
-      padding: EdgeInsets.symmetric(horizontal: 20),
-      child: Row(
+      padding: EdgeInsets.symmetric(horizontal: 50),
+      child: Stack(
         children: [
-          _buildCustomIcon(Icons.settings, 50),
-          SizedBox(width: 10),
-          Expanded(
+          Positioned.fill(
             child: Center(
               child: Text(
-                'emma ai',
+                'Emma Ai',
                 style: TextStyle(
-                  fontSize: 61,
-                  color: Colors.white,
+                  fontSize: 60 * (screenHeight / 1400),
+                  color: Color(0xFF40C2FF),
                   fontWeight: FontWeight.normal,
                 ),
               ),
             ),
           ),
-          Text(
-            'Professor ${widget.name ?? ""}',
-            style: TextStyle(
-              fontSize: 20,
-              color: Colors.white,
-            ),
+          Row(
+            children: [
+              _buildCustomIcon(Icons.settings, 50 * (screenHeight / 1400)),
+              Spacer(),
+              Text(
+                'Professor ${widget.name ?? ""}',
+                style: TextStyle(
+                  fontSize: 22 * (screenHeight / 1400),
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(width: 10),
+              _buildCustomIcon(Icons.account_circle, 50 * (screenHeight / 1400)),
+            ],
           ),
-          SizedBox(width: 10),
-          _buildCustomIcon(Icons.account_circle, 50),
         ],
       ),
     );
