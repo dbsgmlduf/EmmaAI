@@ -29,17 +29,59 @@ class ResultPanel extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Stom count ${chart['stomcount'] ?? '0'}',
-                  style: TextStyle(color: Colors.white, fontSize: 18*(screenHeight/1200))
+                Row(
+                  children: [
+                    Text('Stom count', style: TextStyle(color: Colors.white, fontSize: 18*(screenHeight/1200))),
+                    SizedBox(width: 16),
+                    if (chart['stomcount'] != null && 
+                        chart['stomcount'].toString().isNotEmpty && 
+                        chart['stomcount'].toString() != '0')
+                      Text(
+                        chart['stomcount'],
+                        style: TextStyle(
+                          color: Color(0xFFFF2828),
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                  ],
                 ),
-                SizedBox(height: 8),
-                Divider(color: Colors.white, thickness: 1),
-                SizedBox(height: 8),
-                Text(
-                  'Stom size ${chart['stomsize'] ?? '0'}',
-                  style: TextStyle(color: Colors.white, fontSize: 18*(screenHeight/1200))
+                SizedBox(height: 20),
+                Row(
+                  children: [
+                    Text(
+                        'Stom size',
+                        style: TextStyle(color: Colors.white, fontSize: 18*(screenHeight/1200))
+                    ),
+                    SizedBox(width: 40),
+                    Text(
+                      '(unit : px)',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
                 ),
+                if (chart['stomsize'] != null && 
+                    chart['stomsize'].toString().isNotEmpty && 
+                    chart['stomsize'].toString() != '0')
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: List.generate(
+                      chart['stomsize'].toString().split(',').length,
+                      (index) => Padding(
+                        padding: EdgeInsets.only(left: 16, top: 4),
+                        child: Text(
+                          '[${index + 1}] ${chart['stomsize'].toString().split(',')[index].trim()}',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18*(screenHeight/1200)
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
               ],
             ),
           ),
