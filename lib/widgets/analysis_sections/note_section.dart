@@ -42,7 +42,7 @@ class _NoteSectionState extends State<NoteSection> {
     return Container(
       width: MediaQuery.of(context).size.width * (1164/1920),
       height: MediaQuery.of(context).size.height * (186/1200),
-      padding: EdgeInsets.all(5),
+      padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
         border: Border.all(color: Color(0xFF40C2FF), width: 3),
         borderRadius: BorderRadius.circular(10),
@@ -67,7 +67,7 @@ class _NoteSectionState extends State<NoteSection> {
                       });
                     } : null,
                     child: Text(_isEditing ? 'Save' : 'Edit',
-                      style: TextStyle(color: Color(0xFF40C2FF), fontSize: fontSize)),
+                      style: TextStyle(color: Colors.white, fontSize: fontSize)),
                   ),
                   TextButton(
                     onPressed: widget.isPatientSelected ? () {
@@ -77,7 +77,7 @@ class _NoteSectionState extends State<NoteSection> {
                       });
                     } : null,
                     child: Text('Delete', 
-                      style: TextStyle(color: Colors.red, fontSize: fontSize)),
+                      style: TextStyle(color: Color(0xFFB3B3B4), fontSize: fontSize)),
                   ),
                 ],
               ),

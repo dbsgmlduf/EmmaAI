@@ -15,7 +15,7 @@ class PatientInfoSection extends StatelessWidget {
     return Container(
       width: MediaQuery.of(context).size.width * (320/1920),
       height: MediaQuery.of(context).size.height * (180/1200),
-      padding: EdgeInsets.all(16),
+      padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
         border: Border.all(color: Color(0xFF40C2FF), width: 3),
         borderRadius: BorderRadius.circular(10),
@@ -28,7 +28,7 @@ class PatientInfoSection extends StatelessWidget {
           Expanded(
             child: Row(
               children: [
-                Text('User ID: ', style: TextStyle(color: Color(0xFF40C2FF), fontSize: fontSize)),
+                Text('User ID : ', style: TextStyle(color: Color(0xFF40C2FF), fontSize: fontSize)),
                 Flexible(
                   child: Text(patient?.id ?? '', 
                     overflow: TextOverflow.ellipsis,
@@ -41,7 +41,7 @@ class PatientInfoSection extends StatelessWidget {
           Expanded(
             child: Row(
               children: [
-                Text('Date: ', style: TextStyle(color: Color(0xFF40C2FF), fontSize: fontSize)),
+                Text('Date : ', style: TextStyle(color: Color(0xFF40C2FF), fontSize: fontSize)),
                 Flexible(
                   child: Text(patient?.date ?? '', 
                     overflow: TextOverflow.ellipsis,
@@ -54,7 +54,7 @@ class PatientInfoSection extends StatelessWidget {
           Expanded(
             child: Row(
               children: [
-                Text('Sex: ', style: TextStyle(color: Color(0xFF40C2FF), fontSize: fontSize)),
+                Text('Sex : ', style: TextStyle(color: Color(0xFF40C2FF), fontSize: fontSize)),
                 Flexible(
                   child: Text(patient?.sex ?? '', 
                     overflow: TextOverflow.ellipsis,
@@ -67,7 +67,7 @@ class PatientInfoSection extends StatelessWidget {
           Expanded(
             child: Row(
               children: [
-                Text('Age: ', style: TextStyle(color: Color(0xFF40C2FF), fontSize: fontSize)),
+                Text('Age : ', style: TextStyle(color: Color(0xFF40C2FF), fontSize: fontSize)),
                 Flexible(
                   child: Text(patient?.age?.toString() ?? '', 
                     overflow: TextOverflow.ellipsis,

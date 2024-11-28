@@ -71,7 +71,7 @@ class _AnalysisResultState extends State<AnalysisResult> {
           children: [
             Container(
               width: 1164 * widthRatio,
-              height: 590 * heightRatio,
+              height: 644 * heightRatio,
               child: ImageSection(
                 uploadedImagePath: widget.uploadedImagePath,
                 analysisImagePath: widget.analysisImagePath,
@@ -93,11 +93,11 @@ class _AnalysisResultState extends State<AnalysisResult> {
                     widget.onChartDeleted(widget.selectedChartId!);
                   }
                 },
-                containerWidth: 550 * widthRatio,
-                containerHeight: 490 * heightRatio,
+                containerWidth: 590 * widthRatio,
+                containerHeight: 544 * heightRatio,
               ),
             ),
-            SizedBox(height: 16 * heightRatio),
+            SizedBox(height: 10 * heightRatio),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -122,7 +122,7 @@ class _AnalysisResultState extends State<AnalysisResult> {
                 ),
               ],
             ),
-            SizedBox(height: 16 * heightRatio),
+            SizedBox(height: 10 * heightRatio),
             NoteSection(
               initialNote: widget.chart['note'] ?? widget.patient?.note,
               onNoteSaved: widget.onNoteSaved,

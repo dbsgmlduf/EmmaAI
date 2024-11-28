@@ -37,6 +37,7 @@ class _FindingsSectionState extends State<FindingsSection> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     final fontSize = 22 * (screenHeight / 1200);
+    final painLeveloFntSize = 27 * (screenHeight / 1200);
 
     final isAphthousStomatitis = widget.chart['findings'] == '1';
     final isOralThrush = widget.chart['findings'] == '2';
@@ -62,53 +63,72 @@ class _FindingsSectionState extends State<FindingsSection> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Flexible(
-                  child: Text('Aphthous stomatitis',
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                          color: isAphthousStomatitis ? Color(0xFFFFAE00) : Colors.white,
-                          fontSize: fontSize
-                      )
-                  ),
+                Text('Aphthous stomatitis',
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        color: isAphthousStomatitis ? Color(0xFFFFAE00) : Colors.white,
+                        fontSize: fontSize
+                    )
                 ),
+                SizedBox(width: 10,),
                 SizedBox(
                   width: 75 * (screenWidth / 1920),
                   height: 40 * (screenHeight / 1200),
-                  child: Switch(
-                    value: isAphthousStomatitis,
-                    onChanged: widget.isPatientSelected && widget.chart['chartId'] == null
-                        ? (value) => _onSwitchChanged('1')
-                        : null,
-                    activeColor: Color(0xFF40C2FF),
+                  child: FittedBox(
+                    fit: BoxFit.fill,
+                    child: Switch(
+                      value: isAphthousStomatitis,
+                      onChanged: widget.isPatientSelected && widget.chart['chartId'] == null
+                          ? (value) => _onSwitchChanged('1')
+                          : null,
+                      activeColor: Color(0xFF40C2FF),
+                    ),
                   ),
                 ),
-                SizedBox(width: 16),
+                SizedBox(width: 20),
                 Text('Oral thrush',
                     style: TextStyle(
                         color: isOralThrush ? Color(0xFFFFAE00) : Colors.white,
                         fontSize: fontSize
                     )
                 ),
-                Switch(
-                  value: isOralThrush,
-                  onChanged: widget.isPatientSelected && widget.chart['chartId'] == null
-                      ? (value) => _onSwitchChanged('2')
-                      : null,
-                  activeColor: Color(0xFF40C2FF),
+                SizedBox(width: 10,),
+                SizedBox(
+                  width: 75 * (screenWidth / 1920),
+                  height: 40 * (screenHeight / 1200),
+                  child: FittedBox(
+                    fit: BoxFit.fill,
+                    child: Switch(
+                      value: isOralThrush,
+                      onChanged: widget.isPatientSelected && widget.chart['chartId'] == null
+                          ? (value) => _onSwitchChanged('2')
+                          : null,
+                      activeColor: Color(0xFF40C2FF),
+                    ),
+                  ),
                 ),
-                SizedBox(width: 16),
+
+                SizedBox(width: 20),
                 Text('Oral herpes',
                     style: TextStyle(
                         color: isOralHerpes ? Color(0xFFFFAE00) : Colors.white,
                         fontSize: fontSize
                     )
                 ),
-                Switch(
-                  value: isOralHerpes,
-                  onChanged: widget.isPatientSelected && widget.chart['chartId'] == null
-                      ? (value) => _onSwitchChanged('3')
-                      : null,
-                  activeColor: Color(0xFF40C2FF),
+                SizedBox(width: 10),
+                SizedBox(
+                  width: 75 * (screenWidth / 1920),
+                  height: 40 * (screenHeight / 1200),
+                  child: FittedBox(
+                    fit: BoxFit.fill,
+                    child: Switch(
+                      value: isOralHerpes,
+                      onChanged: widget.isPatientSelected && widget.chart['chartId'] == null
+                          ? (value) => _onSwitchChanged('3')
+                          : null,
+                      activeColor: Color(0xFF40C2FF),
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -117,14 +137,14 @@ class _FindingsSectionState extends State<FindingsSection> {
             child: Row(
               children: [
                 Text(
-                    'Pain Level',
+                    'Pain Level ',
                     style: TextStyle(color: Color(0xFF40C2FF), fontSize: fontSize)
                 ),
                 Text(
                     '${painLevel.round()}',
-                    style: TextStyle(color: Colors.white, fontSize: fontSize)
+                    style: TextStyle(color: Colors.white, fontSize: painLeveloFntSize)
                 ),
-                SizedBox(width: 16),
+                SizedBox(width: 10),
                 Expanded(
                   child: SizedBox(
                     height: 6 * (screenHeight / 1200),
@@ -140,7 +160,7 @@ class _FindingsSectionState extends State<FindingsSection> {
                           ? _onPainLevelChanged
                           : null,
                       thumbColor: Color(0xFF40C2FF),
-                      overlayColor: MaterialStateProperty.all(Color(0xFF40C2FF).withOpacity(0.2)),
+                      overlayColor: MaterialStateProperty.all(Color(0xFF40C2FF).withOpacity(0.1)),
                       secondaryActiveColor: Color(0xFF40C2FF),
                     ),
                   ),

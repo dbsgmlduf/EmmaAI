@@ -362,7 +362,7 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
           ),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.all(24.0),
+              padding: const EdgeInsets.all(10.0),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
