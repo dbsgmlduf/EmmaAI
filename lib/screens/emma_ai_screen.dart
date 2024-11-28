@@ -366,24 +366,26 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * (4/18),
-                    child: PatientList(
-                      patients: patients,
-                      selectedPatientId: selectedPatient?.id,
-                      onPatientSelected: selectPatient,
-                      onImageUploaded: onImageUploaded,
-                      onImageDeleted: deleteImage,
-                      onImageAnalyzed: analyzeImage,
-                      isPatientSelected: selectedPatient != null,
-                      licenseKey: widget.licenseKey,
-                      onPatientDeleted: deletePatient,
-                      onPatientsUpdated: _loadPatients,
+                  Container(
+                    padding : EdgeInsets.fromLTRB(30, 0, 10,0),
+                    child: SizedBox(
+                      width: 384/1920*MediaQuery.of(context).size.width,
+                      child: PatientList(
+                        patients: patients,
+                        selectedPatientId: selectedPatient?.id,
+                        onPatientSelected: selectPatient,
+                        onImageUploaded: onImageUploaded,
+                        onImageDeleted: deleteImage,
+                        onImageAnalyzed: analyzeImage,
+                        isPatientSelected: selectedPatient != null,
+                        licenseKey: widget.licenseKey,
+                        onPatientDeleted: deletePatient,
+                        onPatientsUpdated: _loadPatients,
+                      ),
                     ),
                   ),
-                  SizedBox(width: 10),
-                  Expanded(
-                    flex: 6,
+                  Container(
+                    padding : EdgeInsets.fromLTRB(0, 0, 30,0),
                     child: AnalysisResult(
                       patient: selectedPatient,
                       uploadedImagePath: selectedPatient != null ? patientImages[selectedPatient!.id] : null,
@@ -398,23 +400,27 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
                       selectedChartId: chart['chartId']?.toString(),
                     ),
                   ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * (2/18),
-                    child: Column(
-                      children: [
-                        ResultPanel(chart: chart),
-                        SizedBox(height: 16),
-                        Expanded(
-                          child: HistoryPanel(
-                            chartHistory: chartHistory,
-                            onChartSelected: updateChart,
-                            onNewAnalysis: newAnalysis,
-                            onChartDeleted: deleteChart,
-                          ),
+                  Container(
+                      padding: EdgeInsets.fromLTRB(0, 20, 50, 100),
+                      child: SizedBox(
+                        width: 224/1920*MediaQuery.of(context).size.width,
+                        child: Column(
+                          children: [
+                            ResultPanel(chart: chart),
+                            SizedBox(height: 16),
+                            Expanded(
+                              child: HistoryPanel(
+                                chartHistory: chartHistory,
+                                onChartSelected: updateChart,
+                                onNewAnalysis: newAnalysis,
+                                onChartDeleted: deleteChart,
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
                   ),
+
                 ],
               ),
             ),

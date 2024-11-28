@@ -41,8 +41,8 @@ class _PatientListState extends State<PatientList> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    final listWidth = 395 / 1920 * screenWidth;
-    final listHeight = 1010 / 1200 * screenHeight;
+    final listWidth = 384 / 1920 * screenWidth;
+    final listHeight = 1030 / 1200 * screenHeight;
     final headerFontSize = 22 / 1200 * screenHeight;
     final infoFontSize = 18 / 1200 * screenHeight;
     final buttonWidth = 350 / 1920 * screenWidth;
@@ -55,12 +55,7 @@ class _PatientListState extends State<PatientList> {
       height: listHeight,
       decoration: BoxDecoration(
         border: Border.all(color: Color(0xFF40C2FF), width: 3),
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(10),
-          topRight: Radius.circular(10),
-          bottomLeft: Radius.circular(58),
-          bottomRight: Radius.circular(58),
-        ),
+        borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
         children: [

@@ -7,6 +7,7 @@ class ResultPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
     return Container(
       margin: EdgeInsets.only(bottom: 50),
       child: Column(
@@ -16,7 +17,7 @@ class ResultPanel extends StatelessWidget {
             'RESULT',
             style: TextStyle(
               color: Color(0xFF40C2FF),
-              fontSize: 24,
+              fontSize: 22*(screenHeight/1200),
               fontWeight: FontWeight.bold
             )
           ),
@@ -29,15 +30,15 @@ class ResultPanel extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '구내염 개수: ${chart['stomcount'] ?? '0'}',
-                  style: TextStyle(color: Colors.white)
+                  'Stom count ${chart['stomcount'] ?? '0'}',
+                  style: TextStyle(color: Colors.white, fontSize: 18*(screenHeight/1200))
                 ),
                 SizedBox(height: 8),
                 Divider(color: Colors.white, thickness: 1),
                 SizedBox(height: 8),
                 Text(
-                  '구내염 크기: ${chart['stomsize'] ?? '0'}',
-                  style: TextStyle(color: Colors.white)
+                  'Stom size ${chart['stomsize'] ?? '0'}',
+                  style: TextStyle(color: Colors.white, fontSize: 18*(screenHeight/1200))
                 ),
               ],
             ),
@@ -72,6 +73,8 @@ class _HistoryPanelState extends State<HistoryPanel> {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+
     final int totalPages = (widget.chartHistory.length / _itemsPerPage).ceil();
     final startIndex = _currentPage * _itemsPerPage;
     final endIndex = (startIndex + _itemsPerPage < widget.chartHistory.length) 
@@ -88,7 +91,7 @@ class _HistoryPanelState extends State<HistoryPanel> {
             'HISTORY',
             style: TextStyle(
               color: Color(0xFF40C2FF),
-              fontSize: 24,
+              fontSize: 22*(screenHeight/1200),
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -117,7 +120,7 @@ class _HistoryPanelState extends State<HistoryPanel> {
                   },
                   child: Container(
                     margin: EdgeInsets.only(bottom: 8),
-                    padding: EdgeInsets.symmetric(vertical: 3, horizontal: 10),
+                    padding: EdgeInsets.symmetric(vertical: 3),
                     decoration: BoxDecoration(
                       color: isSelected ? Color(0xFF40C2FF) : Colors.transparent,
                       borderRadius: BorderRadius.circular(20),
@@ -126,7 +129,7 @@ class _HistoryPanelState extends State<HistoryPanel> {
                       '$globalIndex. [ ${chart['displayDate']} ${chart['displayTime']} ]',
                       style: TextStyle(
                         color: isSelected ? Colors.black : Colors.white,
-                        fontSize: 14,
+                        fontSize: 18*(screenHeight/1200),
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -139,15 +142,17 @@ class _HistoryPanelState extends State<HistoryPanel> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               IconButton(
-                icon: Icon(Icons.arrow_back_ios, color: Color(0xFF40C2FF)),
-                onPressed: _currentPage > 0 
-                    ? () => setState(() => _currentPage--) 
+                padding: EdgeInsets.zero,
+                icon: Icon(Icons.arrow_back_ios, color: Color(0xFF40C2FF),size: 40*(screenHeight/1040),),
+                onPressed: _currentPage > 0
+                    ? () => setState(() => _currentPage--)
                     : null,
               ),
               IconButton(
-                icon: Icon(Icons.arrow_forward_ios, color: Color(0xFF40C2FF)),
-                onPressed: _currentPage < totalPages - 1 
-                    ? () => setState(() => _currentPage++) 
+                padding: EdgeInsets.zero,
+                icon: Icon(Icons.arrow_forward_ios, color: Color(0xFF40C2FF), size: 40*(screenHeight/1040)),
+                onPressed: _currentPage < totalPages - 1
+                    ? () => setState(() => _currentPage++)
                     : null,
               ),
             ],
