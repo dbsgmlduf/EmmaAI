@@ -264,19 +264,28 @@ class DatabaseHelper {
   }
 
   Future<String> getLatestStomCount(String patientId) async {
+    print('------ getLatestStomCount 호출 ------');
+    print('요청된 환자 ID: $patientId');
+    
     final db = await database;
     final charts = await db.query(
-        'patientchart',
-        columns: ['stomcount'],
-        where: 'patientId = ?',
-        whereArgs: [patientId],
-        orderBy: 'date DESC',
-        limit: 1
+      'patientchart',
+      columns: ['stomcount'],
+      where: 'patientId = ?',
+      whereArgs: [patientId],
+      orderBy: 'date DESC',
+      limit: 1
     );
 
+    print('조회된 차트 데이터: $charts');
+
     if (charts.isNotEmpty && charts.first['stomcount'] != null) {
-      return charts.first['stomcount'] as String;
+      final stomcount = charts.first['stomcount'] as String;
+      print('반환되는 stomcount: $stomcount');
+      return stomcount;
     }
-    return '0';  // 기본값으로 '0' 반환
+    
+    print('기본값 0 반환');
+    return '0';
   }
 }

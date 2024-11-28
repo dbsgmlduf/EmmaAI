@@ -47,17 +47,32 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
   }
 
   Future<void> _loadPatients() async {
+    print('===== 환자 목록 로딩 시작 =====');
+    
     List<Patient> loadedPatients = await PatientService.loadPatients(widget.licenseKey);
+    print('초기 환자 목록: ${loadedPatients.map((p) => {
+      'id': p.id,
+      'resultNo': p.resultNo,
+      'stomcount': p.stomcount,
+    }).toList()}');
 
-    // 각 환자의 최근 stomcount 가져오기
     for (var i = 0; i < loadedPatients.length; i++) {
       final stomcount = await DatabaseHelper.instance.getLatestStomCount(loadedPatients[i].id);
+      print('환자 ID: ${loadedPatients[i].id} - 최근 stomcount: $stomcount');
       loadedPatients[i] = loadedPatients[i].copyWith(stomcount: stomcount);
     }
+
+    print('stomcount 업데이트 후 환자 목록: ${loadedPatients.map((p) => {
+      'id': p.id,
+      'resultNo': p.resultNo,
+      'stomcount': p.stomcount,
+    }).toList()}');
 
     setState(() {
       patients = loadedPatients;
     });
+    
+    print('===== 환자 목록 로딩 완료 =====\n');
   }
 
   void selectPatient(Patient patient) async {
@@ -66,8 +81,8 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
       selectedPatient = patient;
       chartHistory = patientCharts;
       chart = {
-        'stomcount': '0',
-        'stomsize': '0',
+        'stomcount': '',
+        'stomsize': '',
         'findings': '',
         'painLevel': '5.0',
         'note': '',
@@ -95,8 +110,8 @@ class _EmmaAIScreenState extends State<EmmaAIScreen> {
 
         // 차트 및 분석 결과 초기화
         chart = {
-          'stomcount': '0',
-          'stomsize': '0',
+          'stomcount': '',
+          'stomsize': '',
           'findings': '',
           'painLevel': '5.0',
           'note': '',

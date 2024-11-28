@@ -73,18 +73,31 @@ class PatientListContent extends StatelessWidget {
   }
 
   Color _getResultColor(String resultNo) {
-    if (resultNo.isEmpty) return Colors.white;  // 미확정
+    print('------ 결과 색상 계산 ------');
+    print('입력된 resultNo: $resultNo');
+
+    if (resultNo.isEmpty || resultNo == '0') {
+      print('반환 색상: 회색 (분석 전 상태)');
+      return Colors.grey;
+    }
 
     int? count = int.tryParse(resultNo);
-    if (count == null) return Colors.grey;  // 파싱 실패
-
-    switch (count) {
-      case 1:
-        return Colors.blue;    // 정상 (구내염 1개)
-      case 0:
-        return Colors.white;   // 미확정 (분석 전)
-      default:
-        return Colors.red;     // 비정상 (구내염 2개 이상)
+    print('파싱된 숫자: $count');
+    
+    if (count == null) {
+      print('반환 색상: 흰색 (파싱1 실패)');
+      return Colors.white;
     }
+
+    if (count == 1) {
+      print('반환 색상: 파란색 (정상)');
+      return Colors.blue;
+    } else if (count > 1) {
+      print('반환 색상: 빨간색 (비정상)');
+      return Colors.red;
+    }
+
+    print('반환 색상: 흰색 (기타 케이스)');
+    return Colors.white;
   }
 }
