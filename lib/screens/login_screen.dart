@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'signup_screen.dart';
+import 'reset_password_screen.dart';
 import 'emma_ai_screen.dart';
 import '../services/api_service.dart';
 import '../widgets/auth_widgets.dart';
@@ -140,7 +141,10 @@ class _LoginScreenState extends State<LoginScreen> {
                               alignment: Alignment.centerRight,
                               child: TextButton(
                                 onPressed: () {
-                                  // 비밀번호 재설정 로직 구현
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => ResetPasswordScreen()),
+                                  );
                                 },
                                 child: Text(
                                   'Reset Password',

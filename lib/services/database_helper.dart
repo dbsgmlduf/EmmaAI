@@ -288,4 +288,33 @@ class DatabaseHelper {
     print('기본값 0 반환');
     return '0';
   }
+
+  Future<Map<String, dynamic>?> getUserByEmailAndLicenseKey(String email, String licenseKey) async {
+    final db = await database;
+    final results = await db.query(
+      'users',
+      where: 'email = ? AND licenseKey = ?',
+      whereArgs: [email, licenseKey],
+    );
+    if (results.isNotEmpty) {
+      return results.first;
+    }
+    return null;
+  }
+
+  Future<bool> updatePasswordWithoutOldPassword(String email, String newPassword) async {
+    final db = await database;
+    try {
+      final rowsUpdated = await db.update(
+        'users',
+        {'password': newPassword},
+        where: 'email = ?',
+        whereArgs: [email],
+      );
+      return rowsUpdated > 0;
+    } catch (e) {
+      print('비밀번호 재설정 중 오류 발생: $e');
+      return false;
+    }
+  }
 }

@@ -108,8 +108,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             buildAuthTextField('License Key', Icons.vpn_key, scale, _licenseKeyController),
                             SizedBox(height: 20 * scale),
                             buildAuthButton('Sign up', scale, _signUp),
-                            SizedBox(height: 10 * scale),
-                            SizedBox(height: 10 * scale),
+                            SizedBox(height: 20 * scale),
                             Container(
                               width: 600 * scale,
                               child: Align(
